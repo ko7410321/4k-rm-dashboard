@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>致富易（優越）儲蓄壽險計劃 - OCBC 華僑銀行</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+  :root {
+    --ocbc-green: #004B3A;
+    --ocbc-gold: #C5A55A;
+    --ocbc-dark: #1A1A2E;
+    --ocbc-light: #F8F7F4;
+    --accent-red: #C0392B;
+    --accent-blue: #2C6B9E;
+    --text-dark: #1a1a2e;
+    --text-muted: #5a5a7a;
+    --card-bg: #ffffff;
+    --card-shadow: 0 4px 24px rgba(0,75,58,0.08);
+    --card-hover-shadow: 0 8px 40px rgba(0,75,58,0.15);
+    --border-radius: 16px;
+    --border-radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--ocbc-light);
+    color: var(--text-dark);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, var(--ocbc-green) 0%, #00281E 100%);
+    color: white;
+    padding: 60px 24px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 50%, rgba(197,165,90,0.06) 0%, transparent 60%),
+                radial-gradient(circle at 70% 30%, rgba(255,255,255,0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--ocbc-gold);
+    color: var(--ocbc-green);
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .hero .sub {
+    font-size: 14px;
+    opacity: 0.8;
+    font-weight: 300;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .hero .en-name {
+    font-size: 13px;
+    opacity: 0.5;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    position: relative;
+  }
+  .hero .divider {
+    width: 40px;
+    height: 3px;
+    background: var(--ocbc-gold);
+    margin: 16px auto;
+    border-radius: 2px;
+    position: relative;
+  }
+  .hero .tagline {
+    font-size: 15px;
+    font-weight: 400;
+    opacity: 0.9;
+    max-width: 360px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* CONTAINER */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 32px 16px 60px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 32px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .section-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--ocbc-green);
+    color: white;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ocbc-green);
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: box-shadow 0.3s;
+  }
+  .card:hover {
+    box-shadow: var(--card-hover-shadow);
+  }
+  .card-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ocbc-green);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-icon {
+    font-size: 20px;
+  }
+
+  /* TABLES */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 12px -8px;
+    padding: 0 8px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 500px;
+  }
+  th {
+    background: var(--ocbc-green);
+    color: white;
+    font-weight: 600;
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 13px;
+  }
+  th:first-child { border-radius: 8px 0 0 0; }
+  th:last-child { border-radius: 0 8px 0 0; }
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  tr:last-child td { border-bottom: none; }
+  .highlight-row { background: #f0f8f4; }
+  .check { color: var(--ocbc-green); font-weight: 700; }
+  .cross { color: #c0392b; }
+  .warn { color: #e67e22; }
+
+  /* POINT CARDS */
+  .point-card {
+    border-left: 4px solid var(--ocbc-green);
+    background: var(--card-bg);
+    border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+    box-shadow: var(--card-shadow);
+    padding: 20px 20px 20px 24px;
+    margin-bottom: 16px;
+  }
+  .point-card.gold {
+    border-left-color: var(--ocbc-gold);
+  }
+  .point-card .point-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ocbc-green);
+    margin-bottom: 8px;
+  }
+  .point-card.gold .point-title { color: #8B6914; }
+  .point-card ul {
+    padding-left: 20px;
+  }
+  .point-card li {
+    margin-bottom: 6px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* QUOTE BLOCKS (rebuttal) */
+  .rebuttal-block {
+    background: #f5f9fc;
+    border-left: 4px solid var(--accent-blue);
+    border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+    padding: 16px 20px;
+    margin: 12px 0;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #2c3e50;
+  }
+  .rebuttal-block .customer-says {
+    display: block;
+    font-weight: 600;
+    color: var(--accent-red);
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+  .rebuttal-block .your-reply {
+    display: block;
+  }
+
+  /* COMPETITOR CARDS */
+  .comp-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-top: 4px solid var(--ocbc-gold);
+  }
+  .comp-card .comp-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ocbc-green);
+    margin-bottom: 4px;
+  }
+  .comp-card .comp-product {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  /* FAQ */
+  .faq-item {
+    border-bottom: 1px solid #eee;
+    padding: 16px 0;
+  }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-q {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .faq-q .q-mark {
+    color: var(--ocbc-gold);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .faq-a {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #444;
+    padding-left: 28px;
+  }
+
+  /* FLOW STEPS */
+  .flow-step {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+  }
+  .flow-step-num {
+    width: 36px;
+    height: 36px;
+    background: var(--ocbc-green);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .flow-step-content {
+    flex: 1;
+    background: var(--card-bg);
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--card-shadow);
+    padding: 14px 18px;
+  }
+  .flow-step-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ocbc-green);
+    margin-bottom: 4px;
+  }
+  .flow-step-desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #555;
+  }
+
+  /* RISK DISCLAIMER */
+  .risk-box {
+    background: #fff8e6;
+    border: 1px solid #f0dca0;
+    border-radius: var(--border-radius-sm);
+    padding: 20px;
+    margin-top: 20px;
+  }
+  .risk-box .risk-title {
+    font-weight: 700;
+    color: #8B6914;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  .risk-box ul {
+    padding-left: 18px;
+  }
+  .risk-box li {
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 4px;
+    color: #665;
+  }
+
+  /* QUICK REFERENCE */
+  .qref-box {
+    background: var(--ocbc-dark);
+    color: #e0e0e0;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .qref-box .qref-title {
+    color: var(--ocbc-gold);
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .qref-box .highlight {
+    color: #7ec8a3;
+  }
+  .qref-box .gold {
+    color: var(--ocbc-gold);
+  }
+
+  /* TAGS */
+  .tag {
+    display: inline-block;
+    background: #e8f0ec;
+    color: var(--ocbc-green);
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin: 2px;
+  }
+  .tag.gold {
+    background: #f5efe0;
+    color: #8B6914;
+  }
+  .tag.red {
+    background: #fde8e8;
+    color: #c0392b;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 32px 16px;
+    font-size: 12px;
+    color: #999;
+    line-height: 1.6;
+  }
+  .footer strong { color: #555; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 26px; }
+    .hero { padding: 40px 16px 36px; }
+    .container { padding: 20px 12px 40px; }
+    .card { padding: 18px; }
+    .point-card { padding: 16px; }
+    .section-title { font-size: 18px; }
+    table { font-size: 12px; min-width: 400px; }
+    th, td { padding: 8px 10px; }
+    .rebuttal-block { font-size: 13px; padding: 14px 16px; }
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card, .point-card, .comp-card, .faq-item, .flow-step-content {
+    animation: fadeUp 0.5s ease forwards;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">OCBC 華僑銀行（香港）</div>
+  <h1>致富易（優越）<br>儲蓄壽險計劃</h1>
+  <div class="sub">Wealth Up (Premier) Savings Insurance Plan</div>
+  <div class="en-name">內部代號：FWB（Fortune Wealth Builder）</div>
+  <div class="divider"></div>
+  <div class="tagline">2年供款 · 20年保障 · 代代相傳</div>
+</div>
+
+<div class="container">
+
+  <!-- ============ PART 1: PRODUCT SNAPSHOT ============ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">1</span>
+      <span class="section-title">產品速覽</span>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <tr><th>項目</th><th>內容</th></tr>
+          <tr><td><strong>全名</strong></td><td>致富易（優越）儲蓄壽險計劃</td></tr>
+          <tr><td><strong>英文名</strong></td><td>Wealth Up (Premier) Savings Insurance Plan</td></tr>
+          <tr><td><strong>內部代號</strong></td><td>FWB（Fortune Wealth Builder）</td></tr>
+          <tr><td><strong>承保公司</strong></td><td>香港人壽保險有限公司（Hong Kong Life）</td></tr>
+          <tr><td><strong>分銷渠道</strong></td><td>OCBC 華僑銀行（香港）— 授權保險代理</td></tr>
+          <tr><td><strong>供款年期</strong></td><td>2年（可選擇預繳第二年保費享折扣）</td></tr>
+          <tr><td><strong>保障年期</strong></td><td>20年</td></tr>
+          <tr><td><strong>投保年齡</strong></td><td>15天 至 80歲（毋須驗身）</td></tr>
+          <tr><td><strong>貨幣選擇</strong></td><td>港元 / 美元 / 人民幣</td></tr>
+          <tr><td><strong>最低保額</strong></td><td>HKD 200,000</td></tr>
+          <tr><td><strong>最高保額</strong></td><td>視乎核保，上限 HKD 10,000,000</td></tr>
+        </table>
+      </div>
+      <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:6px;">
+        <span class="tag gold">預繳折扣：美元 5%</span>
+        <span class="tag gold">預繳折扣：港幣/人民幣 4%</span>
+        <span class="tag">毋須驗身</span>
+        <span class="tag">0-80歲</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PART 2: CORE SELLING POINTS ============ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">2</span>
+      <span class="section-title">五大核心賣點</span>
+    </div>
+
+    <!-- Point 1 -->
+    <div class="point-card">
+      <div class="point-title">🏆 賣點一：財富傳承 — 全港銀行產品中最強</div>
+      <div class="table-wrap">
+        <table>
+          <tr><th style="width:28%">功能</th><th style="width:38%">OCBC 致富易（優越）</th><th>競爭對手</th></tr>
+          <tr class="highlight-row">
+            <td><strong>改受保人</strong></td>
+            <td class="check">✅ 無限次（第1保單週年起）</td>
+            <td>HSBC/恒生：有限次數（通常3次）<br>中銀：基本冇</td>
+          </tr>
+          <tr class="highlight-row">
+            <td><strong>保單分拆</strong></td>
+            <td class="check">✅ 可即時分拆成兩份獨立保單</td>
+            <td class="cross">❌ 大部分對手冇呢個功能</td>
+          </tr>
+          <tr class="highlight-row">
+            <td><strong>Contingent 自動延續</strong></td>
+            <td class="check">✅ 指定後續受保人+權益人，自動無縫傳承</td>
+            <td class="cross">❌ 對手要手續或額外申請</td>
+          </tr>
+        </table>
+      </div>
+      <div class="rebuttal-block">
+        <span class="customer-says">💬 客戶可能會問：「其他銀行都有傳承功能㗎？」</span>
+        <span class="your-reply">「係有，但差好遠。OCBC 係<strong>無限次改受保人</strong>，你想傳畀仔女、再傳畀孫都得，都唔使轉名。仲可以<strong>即時分拆保單</strong>——你有兩個仔女？將一份保單拆開兩份，一人一份，唔使買多份。再加上<strong>Contingent 自動延續</strong>，如果你或者你指定嘅權益人有乜事，保單自動轉畀下一代，人走錢唔斷。其他銀行邊個做到咁彈性？HSBC 改受保人有限次數，恒生最多3次，中銀直頭冇提。OCBC 呢個設計係全港最強，唔係我講，係你拎去比較就知。」</span>
+      </div>
+    </div>
+
+    <!-- Point 2 -->
+    <div class="point-card gold">
+      <div class="point-title">⏱ 賣點二：短供快滿 — 2年供款，20年保障</div>
+      <ul>
+        <li>只需 <strong>2年供款</strong>，就有 <strong>20年人壽保障</strong></li>
+        <li>投保簡易，<strong>毋須驗身</strong>（0-80歲）</li>
+        <li>預繳第二年保費再 <strong>享折扣</strong>，實際回報更高</li>
+      </ul>
+      <div style="margin-top:12px; background:#f0f8f4; border-radius:8px; padding:14px;">
+        <div style="font-weight:700; color:var(--ocbc-green); font-size:13px; margin-bottom:6px;">📊 IRR 示例（美元保單，50歲投保，僅供參考）</div>
+        <div style="display:flex; flex-wrap:wrap; gap:16px; font-size:13px;">
+          <span>🔒 保證部分：<strong>~0.53%</strong> 每年</span>
+          <span>📈 預期總回報（保證+非保證）：<strong>~4.07%</strong> 每年</span>
+          <span>💰 20年期滿預期總回報：<strong>217.8%</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Point 3 -->
+    <div class="point-card">
+      <div class="point-title">💳 賣點三：靈活身故賠償支付 — 6種選擇</div>
+      <ul>
+        <li>一筆過支付</li>
+        <li>固定金額分期</li>
+        <li>固定年期分期</li>
+        <li><strong>逐年遞增 3% 分期</strong> ✅（抵抗通脹）</li>
+        <li>部分一筆過 + 餘額分期</li>
+        <li>按指定比例分配</li>
+      </ul>
+      <div class="rebuttal-block">
+        <span class="customer-says">💬 客戶可能會問：「一次過俾晒風險咪好大？」</span>
+        <span class="your-reply">「所以我哋 OCBC 有 6 種身故賠償支付方式俾你揀，特別係<strong>逐年遞增 3%</strong>嗰種，每年俾多 3%，抵抗通脹，確保你嘅錢到下一代手上唔會貶值。其他銀行邊有咁多選擇？」</span>
+      </div>
+    </div>
+
+    <!-- Point 4 -->
+    <div class="point-card gold">
+      <div class="point-title">🌏 賣點四：人民幣選擇 — 跨境傳承優勢</div>
+      <p style="font-size:14px; line-height:1.8;">OCBC 提供 <strong>港元 / 美元 / 人民幣</strong> 三種貨幣選擇。</p>
+      <div class="rebuttal-block">
+        <span class="customer-says">💬 客戶可能會問：「我又唔需要人民幣保單⋯」</span>
+        <span class="your-reply">「明白，不過好多中高淨值客戶喺內地有資產、有生意、或者下一代喺內地讀書生活。人民幣保單可以<strong>直接做跨境傳承</strong>，唔使兌來兌去蝕匯率。就算你暫時唔需要，有得揀好過冇得揀。你睇 HSBC 滙越、中銀人壽好多產品都冇人民幣選擇，OCBC 有，呢個係優勢。」</span>
+      </div>
+    </div>
+
+    <!-- Point 5 -->
+    <div class="point-card">
+      <div class="point-title">🏦 賣點五：香港人壽（Hong Kong Life）承保</div>
+      <ul>
+        <li>由 <strong>五間本地銀行</strong> 共同持股：中銀香港、創興銀行、上海商業銀行、大新銀行、永隆銀行</li>
+        <li>信貸評級穩定，過往分紅實現率理想</li>
+        <li>OCBC 係香港人壽嘅授權保險代理</li>
+      </ul>
+      <div class="rebuttal-block">
+        <span class="customer-says">💬 客戶可能會問：「香港人壽穩唔穩陣？」</span>
+        <span class="your-reply">「香港人壽係 5 間本地銀行合資成立嘅保險公司，背景好穩陣。而且佢哋過往嘅分紅實現率一直保持得唔錯，最新嘅分紅實現率超過 90% 以上。當然，都要同你講清楚：<strong>分紅係非保證</strong>㗎，一切以保單建議書（Illustration）為準。」</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PART 3: COMPETITOR COMPARISON ============ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">3</span>
+      <span class="section-title">對手比較分析</span>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-name">🏦 HSBC 滙越保險計劃</div>
+      <div class="comp-product">Bright Income Insurance Plan</div>
+      <div class="rebuttal-block">
+        <span class="customer-says">💬 客戶：「HSBC 滙越好似都有每月紅利同傳承，仲有健康保障。」</span>
+        <span class="your-reply">
+          <strong>供款模式唔同</strong>：滙越唔係純 2 年供款 + 20 年保障，係長線供款為主。<br>
+          <strong>傳承彈性輸晒</strong>：冇 OCBC 嘅無限次改受保人 + 即時分拆 + Contingent 自動延續。<br>
+          <strong>冇人民幣選擇</strong>：滙越冇 RMB 保單，跨境傳承要蝕匯率。<br><br>
+          📌 <strong>結論</strong>：如果你想每月坐收被動收入，滙越OK；但如果你想<strong>最靈活傳承 + 最短供款 + 有 RMB 選擇</strong>，致富易（優越）明顯贏。
+        </span>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-name">🏦 中銀人壽（BOC Life）</div>
+      <div class="comp-product">iTarget / Rise Insurance / Glorious Life 等</div>
+      <div class="rebuttal-block">
+        <span class="customer-says">💬 客戶：「中銀好平，保證回報高，又係中資背景。」</span>
+        <span class="your-reply">
+          <strong>產品類型唔同</strong>：中銀多數係非參與型，冇終期紅利增長潛力。<br>
+          <strong>傳承功能係致命弱點</strong>：基本冇提及無限次改受保人、分拆保單、Contingent 自動延續。<br>
+          <strong>貨幣選擇少</strong>：只限 HKD/USD，冇 RMB。<br>
+          <strong>身故賠償選項</strong>：OCBC 有 6 種選擇，包括逐年遞增 3% 分期。<br><br>
+          📌 <strong>結論</strong>：如果你想快入快出（3-5年）、追求純保證回報，中銀OK；但如果你想<strong>20年長線保障 + 真正代代相傳</strong>，致富易（優越）係中銀比唔上嘅。
+        </span>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-name">🏦 恒生銀行</div>
+      <div class="comp-product">DragonPower / The Choice 等</div>
+      <div class="rebuttal-block">
+        <span class="customer-says">💬 客戶：「恒生龍騰/DragonPower 都有改受保人同傳承。」</span>
+        <span class="your-reply">
+          <strong>改受保人限制</strong>：恒生最多 3 次，OCBC 係無限次。<br>
+          <strong>冇即時分拆</strong>：你有兩個仔女？恒生要買兩份保單，OCBC 一份拆兩份。<br>
+          <strong>冇自動延續</strong>：冇 Contingent 安排，傳承過程有斷層風險。<br>
+          <strong>保障期短</strong>：恒生短供產品多數 1-5 年，OCBC 係 20 年。<br>
+          <strong>預繳折扣</strong>：OCBC 預繳享 4-5% 折扣，實際 IRR 更高。<br><br>
+          📌 <strong>結論</strong>：恒生適合本地客戶想簡單增長；但如果你係<strong>高淨值家庭</strong>，想<strong>無限彈性傳承 + 分拆靈活</strong>，致富易（優越）更勝一籌。
+        </span>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <div class="comp-name">🏦 渣打銀行</div>
+      <div class="comp-product">PRUSave / Entrust / Evergreen 系列</div>
+      <div class="rebuttal-block">
+        <span class="customer-says">💬 客戶：「渣打同 Prudential 都有多貨幣同傳承。」</span>
+        <span class="your-reply">
+          <strong>供款期長</strong>：多數係 5 年或更長，OCBC 係 2 年。<br>
+          <strong>PRUSave 保障短</strong>：雖然係 2 年供，但只係 5 年保障，OCBC 係 20 年。<br>
+          <strong>Contingent 自動延續</strong>：OCBC 全自動，渣打要手續先轉移。<br>
+          <strong>6 種身故賠償選擇</strong>：OCBC 有逐年 +3% 遞增分期。<br>
+          <strong>人民幣 + 預繳折扣</strong>：OCBC 兩樣都有。<br><br>
+          📌 <strong>結論</strong>：渣打適合想多貨幣靈活投資嘅客戶；但如果你<strong>最重視代代無縫傳承 + 最短供款期</strong>，致富易（優越）係更好嘅一站式方案。
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PART 4: FAQ ============ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">4</span>
+      <span class="section-title">常見問題</span>
+    </div>
+    <div class="card">
+      <div class="faq-item">
+        <div class="faq-q"><span class="q-mark">Q1</span> 「分紅保險非保證回報，信唔過？」</div>
+        <div class="faq-a">「絕對明白你嘅擔心。所有分紅產品嘅非保證部分都係視乎保險公司嘅投資表現。香港人壽過往嘅分紅實現率一直保持 <strong>90% 以上</strong>，而且 OCBC 會定期更新保單建議書俾你睇實。我哋 selling 嘅時候，永遠跟<strong>建議書嘅數字</strong>嚟講，唔會亂吹回報。保證部分你都睇到——20年期保證回報都超過 111%，就算非保證部分唔理想，你都唔會蝕本金。」</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="q-mark">Q2</span> 「2年供款好急，我唔一定負擔到⋯」</div>
+        <div class="faq-a">「明白嘅，你可以因應自己嘅現金流去揀——分期每年供，或者一筆過預繳。預繳嘅好處係第二年保費有折扣，回報更高。而且只係供 2 年，之後 18 年都唔使煩，等啲錢自己滾存。對比其他銀行，你要供 5 年甚至 10 年，OCBC 呢個設計係最慳時間成本。」</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="q-mark">Q3</span> 「銀行咁多間，點解要揀 OCBC？」</div>
+        <div class="faq-a">「好問題。四大銀行嘅儲蓄保險產品我都幫你比較過，OCBC 嘅<strong>財富傳承設計係全港領先</strong>——無限次改受保人、可即時分拆保單、Contingent 自動延續，呢啲功能其他銀行做唔到或者限制多多。加上<strong>人民幣選擇 + 預繳折扣 + 6 種身故賠償選擇</strong>，同樣 2 年供款嘅產品，OCBC 嘅性價比同彈性係最高。」</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span class="q-mark">Q4</span> 「我自己有 investment portfolio，使乜買儲蓄保險？」</div>
+        <div class="faq-a">「儲蓄保險同投資組合係<strong>互補</strong>，唔係二選一。投資組合你要自己管理、面對市場波動；儲蓄保險係<strong>鎖定回報 + 人壽保障 + 財富傳承</strong>三合一。你嘅投資組合負責增長，呢份保單負責<strong>防守同傳承</strong>——如果你有事，呢份保單即刻變成一筆免稅嘅現金俾你屋企人，而且可以分期領取，確保佢哋唔會一獲過使晒。」</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PART 5: SELLING FLOW ============ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">5</span>
+      <span class="section-title">建議流程</span>
+    </div>
+    <div class="card">
+      <div class="flow-step">
+        <div class="flow-step-num">1</div>
+        <div class="flow-step-content">
+          <div class="flow-step-title">了解客戶需要</div>
+          <div class="flow-step-desc">了解年紀、家庭狀況（有冇仔女？）、財務目標（退休/傳承/增值？）、有冇內地資產或跨境需要、現有投資/保險配置。</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">2</div>
+        <div class="flow-step-content">
+          <div class="flow-step-title">介紹產品概念</div>
+          <div class="flow-step-desc">「我哋 OCBC 有個好 popular 嘅儲蓄計劃，<strong>2年供款，20年保障</strong>。」強調傳承功能（如有家庭），簡單講回報範圍。</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">3</div>
+        <div class="flow-step-content">
+          <div class="flow-step-title">回應異議</div>
+          <div class="flow-step-desc">客戶提到其他銀行 → 用對手比較反擊。客戶擔心分紅 → 用實現率 + 保證回報解釋。</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">4</div>
+        <div class="flow-step-content">
+          <div class="flow-step-title">要求下一步</div>
+          <div class="flow-step-desc">「不如我幫你 make 一份<strong>度身訂造嘅保單建議書（Illustration）</strong>？睇完數字你就知係咪適合你，冇壓力㗎。」</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-step-num">5</div>
+        <div class="flow-step-content">
+          <div class="flow-step-title">跟進</div>
+          <div class="flow-step-desc">3日後 WhatsApp/電話 follow-up。提供比較表（OCBC vs 其他銀行）俾客戶自己對比。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PART 6: RISK DISCLAIMER ============ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">⚠</span>
+      <span class="section-title">風險披露</span>
+    </div>
+    <div class="risk-box">
+      <div class="risk-title">⚠️ 每次都要同客戶講清楚：</div>
+      <ul>
+        <li>分紅（終期紅利）係<strong>非保證</strong>，視乎香港人壽投資表現，可能調低</li>
+        <li>提早退保會有<strong>損失</strong>（頭幾年保證現金價值低）</li>
+        <li>有<strong>信貸風險</strong>（香港人壽）、<strong>匯率風險</strong>（外幣保單）、<strong>通脹風險</strong></li>
+        <li>呢個<strong>唔係銀行存款</strong>，部分保費用嚟買保障同行政費</li>
+        <li>保單由<strong>香港人壽保險有限公司</strong>承保，OCBC 係授權保險代理</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ QUICK REFERENCE ============ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">⚡</span>
+      <span class="section-title">Quick Reference</span>
+    </div>
+    <div class="qref-box">
+      <div class="qref-title">OCBC 致富易（優越）= FWB</div>
+      <span class="highlight">├─</span> 2年供 × 20年保<br>
+      <span class="highlight">├─</span> 0-80歲 毋須驗身<br>
+      <span class="highlight">├─</span> HKD / USD / RMB<br>
+      <span class="highlight">└─</span> 預繳折扣：<span class="gold">USD 5%</span> / HKD&RMB 4%<br>
+      <br>
+      <span class="gold">傳承三連擊：</span><br>
+      <span class="highlight">①</span> 無限次改受保人<br>
+      <span class="highlight">②</span> 可即時分拆兩份<br>
+      <span class="highlight">③</span> Contingent 自動延續<br>
+      <br>
+      身故賠償：6種選擇，包括逐年+3%<br>
+      <br>
+      <span style="opacity:0.6;">vs HSBC 滙越 → 冇RMB、冇分拆、冇自動延續</span><br>
+      <span style="opacity:0.6;">vs 中銀 → 冇傳承功能、冇RMB、保障期短</span><br>
+      <span style="opacity:0.6;">vs 恒生 → 改受保人限3次、冇分拆</span><br>
+      <span style="opacity:0.6;">vs 渣打 → 供款期長、冇Contingent自動</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <strong>OCBC 華僑銀行（香港）</strong><br>
+  致富易（優越）儲蓄壽險計劃 · 由香港人壽保險有限公司承保<br>
+  本文件僅供參考，並不構成保險產品嘅建議或要約。<br>
+  詳情請參閱產品小冊子及保單條款。<br><br>
+  文件生成日期：2026年4月25日
+</div>
+
+</body>
+</html>
