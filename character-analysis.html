@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深度分析：斑目貘 vs 夜神月 vs 魯魯修</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --dark: #0D0D1A;
+    --darker: #07070F;
+    --card-bg: #14142B;
+    --card-border: #2A2A5A;
+    --accent-red: #E74C3C;
+    --accent-gold: #F1C40F;
+    --accent-blue: #3498DB;
+    --accent-purple: #9B59B6;
+    --text-light: #E0E0F0;
+    --text-muted: #8888AA;
+    --font: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--dark);
+    color: var(--text-light);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Particle background */
+  .bg-particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(ellipse at 20% 30%, rgba(155,89,182,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 70%, rgba(52,152,219,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(231,76,60,0.03) 0%, transparent 50%);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(180deg, var(--darker) 0%, var(--dark) 40%, transparent 100%);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-purple), var(--accent-blue), transparent);
+  }
+  .hero-badge {
+    display: inline-block;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    backdrop-filter: blur(4px);
+  }
+  .hero h1 {
+    font-size: clamp(28px, 6vw, 56px);
+    font-weight: 900;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #E74C3C, #F1C40F 30%, #3498DB 60%, #9B59B6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero .sub {
+    font-size: clamp(14px, 2.5vw, 20px);
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-bottom: 8px;
+  }
+  .hero .vs-line {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 24px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .hero .vs-line span {
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+  .hero .vs-line .baku { background: rgba(231,76,60,0.15); color: var(--accent-red); }
+  .hero .vs-line .light { background: rgba(241,196,15,0.15); color: var(--accent-gold); }
+  .hero .vs-line .lelouch { background: rgba(52,152,219,0.15); color: var(--accent-blue); }
+  .hero .vs-line .vs-text { color: var(--text-muted); font-size: 18px; font-weight: 900; }
+  .hero .scroll-hint {
+    margin-top: 40px;
+    animation: float 2s ease-in-out infinite;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
+  /* CONTAINER */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* SECTION DIVIDER */
+  .section-divider {
+    text-align: center;
+    padding: 60px 0 40px;
+    position: relative;
+  }
+  .section-divider .num {
+    font-size: 72px;
+    font-weight: 900;
+    opacity: 0.06;
+    line-height: 1;
+    letter-spacing: -4px;
+  }
+  .section-divider .label {
+    font-size: 24px;
+    font-weight: 700;
+    margin-top: -30px;
+    position: relative;
+  }
+
+  /* CHARACTER CARD */
+  .char-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .char-card:hover {
+    border-color: rgba(255,255,255,0.15);
+  }
+  .char-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .char-card.baku::before { background: linear-gradient(90deg, var(--accent-red), #c0392b); }
+  .char-card.light::before { background: linear-gradient(90deg, var(--accent-gold), #d4a017); }
+  .char-card.lelouch::before { background: linear-gradient(90deg, var(--accent-blue), #1a5276); }
+
+  .char-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .char-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .char-icon.baku { background: rgba(231,76,60,0.15); }
+  .char-icon.light { background: rgba(241,196,15,0.15); }
+  .char-icon.lelouch { background: rgba(52,152,219,0.15); }
+  .char-info { flex: 1; }
+  .char-name {
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .char-name .jp {
+    font-weight: 300;
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-left: 8px;
+  }
+  .char-source {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .char-tag {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 6px;
+  }
+  .char-tag.baku { background: rgba(231,76,60,0.15); color: var(--accent-red); }
+  .char-tag.light { background: rgba(241,196,15,0.15); color: var(--accent-gold); }
+  .char-tag.lelouch { background: rgba(52,152,219,0.15); color: var(--accent-blue); }
+
+  /* ANALYSIS ITEMS */
+  .analysis-item {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 20px 0;
+  }
+  .analysis-item:last-child { padding-bottom: 0; }
+  .analysis-item:first-child { border-top: none; padding-top: 0; }
+  .analysis-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ccc;
+    margin-bottom: 10px;
+  }
+  .analysis-label .emoji { font-size: 16px; }
+  .analysis-text {
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--text-muted);
+  }
+  .analysis-text strong {
+    color: var(--text-light);
+    font-weight: 600;
+  }
+
+  /* COMPARISON TABLE */
+  .comparison-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 20px 0;
+  }
+  .comp-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+    min-width: 700px;
+  }
+  .comp-table th {
+    padding: 16px 14px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: sticky;
+    top: 0;
+  }
+  .comp-table th:first-child {
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--card-border);
+  }
+  .comp-table th:nth-child(2) { color: var(--accent-red); border-bottom: 2px solid rgba(231,76,60,0.3); }
+  .comp-table th:nth-child(3) { color: var(--accent-gold); border-bottom: 2px solid rgba(241,196,15,0.3); }
+  .comp-table th:nth-child(4) { color: var(--accent-blue); border-bottom: 2px solid rgba(52,152,219,0.3); }
+  .comp-table td {
+    padding: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    vertical-align: top;
+    line-height: 1.7;
+  }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table .dimension {
+    font-weight: 700;
+    color: #aaa;
+    white-space: nowrap;
+    min-width: 100px;
+  }
+
+  /* INSIGHT CARD */
+  .insight-section {
+    margin-top: 20px;
+  }
+  .insight-card {
+    background: linear-gradient(135deg, rgba(155,89,182,0.08), rgba(52,152,219,0.08));
+    border: 1px solid rgba(155,89,182,0.2);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  .insight-card .card-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent-purple);
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .insight-card p {
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--text-muted);
+  }
+  .insight-card p strong {
+    color: var(--text-light);
+  }
+
+  /* CORE QUOTE */
+  .quote-section {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .quote-mark {
+    font-size: 48px;
+    opacity: 0.1;
+    line-height: 1;
+    margin-bottom: -10px;
+  }
+  .core-quote {
+    font-size: clamp(18px, 3vw, 26px);
+    font-weight: 700;
+    line-height: 1.6;
+    background: linear-gradient(135deg, #E74C3C, #F1C40F, #3498DB, #9B59B6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .quote-attribution {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 16px;
+    font-weight: 300;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .char-card { padding: 24px 18px; }
+    .char-name { font-size: 18px; }
+    .char-name .jp { display: block; margin-left: 0; }
+    .comp-table { font-size: 12px; }
+    .insight-card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-particles"></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Grok Deep Analysis</div>
+  <h1>天才vs神vs惡魔</h1>
+  <div class="sub">斑目貘 · 夜神月 · 魯魯修 — 深度比較研究</div>
+  <div class="vs-line">
+    <span class="baku">🎲 斑目貘</span>
+    <span class="vs-text">VS</span>
+    <span class="light">📓 夜神月</span>
+    <span class="vs-text">VS</span>
+    <span class="lelouch">⚜️ 魯魯修</span>
+  </div>
+  <div class="scroll-hint">↓ 向下滑動 ↓</div>
+</div>
+
+<div class="container">
+
+  <!-- ========================================== -->
+  <!-- 1. BAKU -->
+  <!-- ========================================== -->
+  <div class="section-divider">
+    <div class="num">01</div>
+    <div class="label" style="color:var(--accent-red);">斑目貘</div>
+  </div>
+
+  <div class="char-card baku">
+    <div class="char-header">
+      <div class="char-icon baku">🎲</div>
+      <div class="char-info">
+        <div class="char-name">斑目貘 <span class="jp">まだらめ ばく</span></div>
+        <div class="char-source">《噬謊者》／《賭博霸王傳》</div>
+        <div class="char-tag baku">遊戲型操縱者</div>
+      </div>
+    </div>
+
+    <div class="analysis-item">
+      <div class="analysis-label"><span class="emoji">🧩</span> 心理特質</div>
+      <div class="analysis-text">
+        極度冷靜理性，擁有超凡洞察力，能一眼看穿人性嘅謊言同本質。佢理解人性係<strong>貪婪、恐懼、虛榮同自保本能</strong>嘅混合體，將人性弱點視為賭局中最好利用嘅「籌碼」。唔係簡單道德判斷，而係將人性當成<strong>可預測、可操控嘅系統</strong>。佢同時享受混亂同謊言帶嚟嘅刺激，視之為生命嘅本質，追求自由意志同對抗命運嘅快感。
+      </div>
+    </div>
+
+    <div class="analysis-item">
+      <div class="analysis-label"><span class="emoji">🎯</span> 操控手法</div>
+      <div class="analysis-text">
+        主要透過<strong>精密心理戰</strong>同<strong>複雜賭局設計</strong>。會模仿聲音、長期布局、故意露出破綻引對手入局，最後令對手自己「食自己嘅謊」。核心係<strong>「噬謊」</strong>——戳破對手嘅欺騙同自我欺騙。唔單止用金錢或性命做注碼，更會利用對手嘅慾望、恐懼同自大，喺高風險環境下逼佢哋露出真面目。
+      </div>
+    </div>
+
+    <div class="analysis-item">
+      <div class="analysis-label"><span class="emoji">👑</span> 領導哲學</div>
+      <div class="analysis-text">
+        冇明顯嘅「理想世界」宏大藍圖，更偏向<strong>個人主義賭徒哲學</strong>。追求極致刺激同挑戰極限，相信「<strong>因為有終點，所以賭局中人才會發光</strong>」。價值觀係行動至上、接受混亂同風險——唔係改造世界，而係喺黑暗世界中稱霸同享受過程。偶爾提到「食謊」建立公平嘅賭博世界，但整體以過程為主、目的為輔。
+      </div>
+    </div>
+
+    <div class="analysis-item">
+      <div class="analysis-label"><span class="emoji">🛡️</span> 風險管理</div>
+      <div class="analysis-text">
+        面對危機<strong>極度冷靜</strong>，敢冒巨大風險但每次都精準計算。失敗唔係結束，而係<strong>下一步布局嘅開始</strong>。傾向用更高風險反轉局面，視危機為新遊戲嘅開端，多層計劃確保就算輸咗都有後路。
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. LIGHT -->
+  <!-- ========================================== -->
+  <div class="section-divider">
+    <div class="num">02</div>
+    <div class="label" style="color:var(--accent-gold);">夜神月</div>
+  </div>
+
+  <div class="char-card light">
+    <div class="char-header">
+      <div class="char-icon light">📓</div>
+      <div class="char-info">
+        <div class="char-name">夜神月 <span class="jp">やがみ ライト</span></div>
+        <div class="char-source">《死亡筆記》</div>
+        <div class="char-tag light">自封神式理想家</div>
+      </div>
+    </div>
+
+    <div class="analysis-item">
+      <div class="analysis-label"><span class="emoji">🧩</span> 心理特質</div>
+      <div class="analysis-text">
+        <strong>高度自戀</strong>同<strong>完美主義</strong>，相信人性本惡，需要絕對正義（即係自己）嚟淨化。佢深刻理解人性嘅恐懼、慾望同從眾心理，將之轉化為對Kira嘅崇拜或恐懼。佢見到人性嘅虛偽同貪婪，就更覺得自己係高人一等嘅「神」，用<strong>優越感驅動一切行動</strong>。
+      </div>
+    </div>
+
+    <div class="analysis-item">
+      <div class="analysis-label"><span class="emoji">🎯</span> 操控手法</div>
+      <div class="analysis-text">
+        利用<strong>Death Note</strong>進行隱形殺人 + <strong>媒體操控</strong> + <strong>心理誘導</strong>。會假扮正常人、布下多重陷阱、利用對手道德弱點。後期更依賴直接殺人滅口，仲會用演技同誤導嚟操控身邊人同警方，層層布局令對手永遠落後一步。
+      </div>
+    </div>
+
+    <div class="analysis-item">
+      <div class="analysis-label"><span class="emoji">👑</span> 領導哲學</div>
+      <div class="analysis-text">
+        理想世界係<strong>「無犯罪嘅新世界」</strong>，自己以神嘅身份統治。價值觀係<strong>極端功利主義</strong>——為達目的（理想）可以犧牲一切「壞人」。佢相信<strong>絕對秩序同自己嘅正義先係唯一正確答案</strong>，唔容許任何異議。
+      </div>
+    </div>
+
+    <div class="analysis-item">
+      <div class="analysis-label"><span class="emoji">🛡️</span> 風險管理</div>
+      <div class="analysis-text">
+        危機時會變得更激進同<strong>偏執（paranoia）</strong>，傾向用更大規模殺戮解決問題。初期極度小心，但後期開始失控，暴露人性最大弱點——<strong>自大</strong>。小錯會累積成致命失誤，缺乏真正嘅後備計劃面對情緒化崩潰。最終死因：<strong>低估他人、高估自己</strong>。
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 3. LELOUCH -->
+  <!-- ========================================== -->
+  <div class="section-divider">
+    <div class="num">03</div>
+    <div class="label" style="color:var(--accent-blue);">魯魯修</div>
+  </div>
+
+  <div class="char-card lelouch">
+    <div class="char-header">
+      <div class="char-icon lelouch">⚜️</div>
+      <div class="char-info">
+        <div class="char-name">魯魯修·vi·不列顛尼亞 <span class="jp">ルルーシュ・ヴィ・ブリタニア</span></div>
+        <div class="char-source">《叛逆的魯魯修》</div>
+        <div class="char-tag lelouch">革命犧牲型理想家</div>
+      </div>
+    </div>
+
+    <div class="analysis-item">
+      <div class="analysis-label"><span class="emoji">🧩</span> 心理特質</div>
+      <div class="analysis-text">
+        天才級人性洞察者，同時擁有<strong>理想家</strong>同<strong>現實主義者</strong>嘅雙重人格。理解人性黑暗面——仇恨、恐懼、貪婪、忠誠、希望，但<strong>相信人性有被救贖嘅潛力</strong>。最大驅動力係對妹妹Nunnally嘅愛同對被壓迫者嘅同情。明知自己係「惡魔」，但仍然堅持<strong>用惡去消滅更大嘅惡</strong>。
+      </div>
+    </div>
+
+    <div class="analysis-item">
+      <div class="analysis-label"><span class="emoji">🎯</span> 操控手法</div>
+      <div class="analysis-text">
+        <strong>Geass絕對服從</strong> + <strong>超凡戰略布局</strong> + <strong>零之面具魅力</strong>。創建黑色騎士團、戴上「零」嘅面具，用戲劇化演說凝聚人心、利用政治矛盾、預測多步棋。最恐怖嘅係——<strong>連自己嘅死亡都變成最終操控工具</strong>（Zero Requiem計劃：畀人殺死自己，成為世界公敵，用自己嘅死換取世界團結）。
+      </div>
+    </div>
+
+    <div class="analysis-item">
+      <div class="analysis-label"><span class="emoji">👑</span> 領導哲學</div>
+      <div class="analysis-text">
+        理想世界係<strong>「溫柔嘅世界」</strong>——無戰爭、無壓迫、無歧視。價值觀係「<strong>以惡制惡</strong>」同「<strong>背負罪惡嘅大義</strong>」。相信真正嘅和平必須有人犧牲自己去做惡人。佢唔係追求個人權力，而係將權力視為<strong>改變世界嘅工具</strong>——願意被全世界憎恨、被歷史記住做暴君，只為換取後世嘅和平。
+      </div>
+    </div>
+
+    <div class="analysis-item">
+      <div class="analysis-label"><span class="emoji">🛡️</span> 風險管理</div>
+      <div class="analysis-text">
+        永遠有長期、多層次嘅後備計劃。佢嘅「<strong>自我犧牲式風險管理</strong>」係最獨特嘅地方——願意接受「自己失敗」作為通往最終成功嘅必要代價。最大弱點係<strong>情感</strong>（對Nunnally嘅關心），會喺關鍵時刻猶豫或暴露破綻。與其餘兩位不同，佢<strong>唔怕犧牲自己</strong>，甚至將之視為最終王牌。
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- COMPARISON TABLE -->
+  <!-- ========================================== -->
+  <div class="section-divider">
+    <div class="num">◆</div>
+    <div class="label" style="color:#ccc;">三方對比</div>
+  </div>
+
+  <div class="char-card" style="padding:24px 20px;">
+    <div class="comparison-wrap">
+      <table class="comp-table">
+        <tr>
+          <th style="min-width:90px;">維度</th>
+          <th style="color:var(--accent-red);">斑目貘</th>
+          <th style="color:var(--accent-gold);">夜神月</th>
+          <th style="color:var(--accent-blue);">魯魯修</th>
+        </tr>
+        <tr>
+          <td class="dimension">定位</td>
+          <td>遊戲型操縱者 🎲</td>
+          <td>自封神式理想家 👑</td>
+          <td>革命犧牲型理想家 💀</td>
+        </tr>
+        <tr>
+          <td class="dimension">核心動力</td>
+          <td>享受過程、追求刺激</td>
+          <td>自戀、神化自己</td>
+          <td>對妹妹嘅愛、大義</td>
+        </tr>
+        <tr>
+          <td class="dimension">理想世界</td>
+          <td>冇宏大藍圖，活在當下</td>
+          <td>無犯罪新世界（自己統治）</td>
+          <td>溫柔嘅世界（無戰爭壓迫）</td>
+        </tr>
+        <tr>
+          <td class="dimension">操控核心</td>
+          <td>噬謊——戳破欺騙</td>
+          <td>死亡筆記——隱形殺人</td>
+          <td>Geass——絕對服從</td>
+        </tr>
+        <tr>
+          <td class="dimension">犧牲精神</td>
+          <td>低（為自己同少數夥伴）</td>
+          <td>中低（犧牲他人，唔會犧牲自己）</td>
+          <td>極高（犧牲自己係最終計劃）</td>
+        </tr>
+        <tr>
+          <td class="dimension">最大弱點</td>
+          <td>太過享受遊戲，有時冒險過度</td>
+          <td>自大、失控後冇後備</td>
+          <td>對妹妹嘅情感牽絆</td>
+        </tr>
+        <tr>
+          <td class="dimension">失敗應對</td>
+          <td>更高風險反轉，繼續玩</td>
+          <td>更大規模殺戮，變偏執</td>
+          <td>犧牲自己，計劃性翻盤</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- INSIGHT REPORT -->
+  <!-- ========================================== -->
+  <div class="section-divider">
+    <div class="num">◈</div>
+    <div class="label" style="color:var(--accent-purple);">綜合洞察報告</div>
+  </div>
+
+  <div class="insight-section">
+    <div class="insight-card">
+      <div class="card-label">🔗 共通點</div>
+      <p>
+        三位都係<strong>超高智商天才</strong>，對人性有極致洞察力。佢哋深知人性充滿謊言、弱點、恐懼同慾望，並將呢啲變成自己最大嘅武器。無論係斑目貘嘅賭局、夜神月嘅死亡筆記，定魯魯修嘅Geass同Zero面具，佢哋都擅長將他人嘅心理弱點轉化為自己嘅優勢，喺危機中依然保持冷靜同多步布局。
+        <br><br>
+        最核心共通點係：佢哋都係<strong>「改變者」</strong>——唔滿足於現狀，都想透過智慧同權力去挑戰命運、揭露真相、打破舊有秩序，最終追求某種形式嘅<strong>「新世界」</strong>。
+      </p>
+    </div>
+
+    <div class="insight-card">
+      <div class="card-label">⚡ 最大差異</div>
+      <p>
+        <strong>🎲 斑目貘</strong> — 最純粹嘅<strong>「遊戲型操縱者」</strong>。佢純粹享受過程，將人生視為一場永無止境嘅高風險賭局。操控人性係為咗刺激同勝利，理想相對個人化同遊戲化，少有真正嘅犧牲精神，主要為自己同少數夥伴服務。
+        <br><br>
+        <strong>📓 夜神月</strong> — 最危險嘅<strong>「自封神式理想家」</strong>。將自己神化，追求絕對無犯罪嘅世界。操控手法帶住強烈自戀同暴君色彩，一旦理想受阻就會失控，最終人性弱點暴露得最徹底。佢係<strong>以理想家包裝嘅極端操縱者</strong>。
+        <br><br>
+        <strong>⚜️ 魯魯修</strong> — 最有深度同悲劇色彩嘅<strong>「革命犧牲型理想家」</strong>。有真正嘅人文關懷同領袖氣質，願意為大義背負全世界嘅憎恨同犧牲自己。平衡咗操縱同理想，情感深度同責任感最強烈。佢係<strong>真正願意付出一切嘅革命家</strong>。
+      </p>
+    </div>
+
+    <div class="insight-card">
+      <div class="card-label">🎭 總結</div>
+      <p>
+        斑目貘係<strong>最純粹嘅遊戲玩家</strong>，操控係為享受；<br>
+        夜神月係<strong>最危險嘅自戀暴君</strong>，操控係為絕對秩序；<br>
+        魯魯修係<strong>最動人嘅革命犧牲者</strong>，操控係為溫柔世界。<br><br>
+        佢哋三個分別代表咗天才面對世界嘅三種極致態度：<strong>玩世、稱神、救世</strong>。
+      </p>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- CORE QUOTE -->
+  <!-- ========================================== -->
+  <div class="quote-section">
+    <div class="quote-mark">💎</div>
+    <div class="core-quote">「天才嘅智慧，從來唔係用嚟順從人性，<br>而係用嚟操控人性弱點、揭露謊言，<br>最終改變世界嘅終極武器。」</div>
+    <div class="quote-attribution">— Grok Deep Analysis</div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div style="position:relative;z-index:1;text-align:center;padding:40px 20px 60px;border-top:1px solid rgba(255,255,255,0.05);">
+  <div style="font-size:12px;color:var(--text-muted);line-height:1.8;">
+    使用 Grok AI 進行深度分析<br>
+    資料參考：《噬謊者》《死亡筆記》《叛逆的魯魯修》<br>
+    生成日期：2026年4月25日
+  </div>
+</div>
+
+</body>
+</html>
