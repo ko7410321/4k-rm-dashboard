@@ -1,835 +1,293 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-HK">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4K RM Selling Dashboard</title>
+<title>YMS Yield-Mortgage Spread Dashboard | 4KGOR</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#06060e;--bg2:#0b0b18;
-  --card:rgba(18,18,35,.75);--card2:rgba(26,26,46,.6);
-  --border:rgba(139,92,246,.12);
-  --purple:#a78bfa;--purple2:#7c3aed;--purple3:#4c1d95;
-  --green:#34d399;--red:#f87171;--gold:#fbbf24;--blue:#60a5fa;--cyan:#22d3ee;--pink:#f472b6;
-  --text:#e2e8f0;--dim:#64748b;--white:#fff;
-  --glow-purple:0 0 20px rgba(139,92,246,.3),0 0 60px rgba(139,92,246,.1);
-  --glow-green:0 0 20px rgba(52,211,153,.3);
-  --glow-gold:0 0 20px rgba(251,191,36,.3);
-}
-@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes gradientShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-
-body{
-  font-family:'Inter',-apple-system,system-ui,'Segoe UI',sans-serif;
-  background:var(--bg);color:var(--text);line-height:1.6;
-  background-image:
-    radial-gradient(ellipse 800px 600px at 20% 10%, rgba(139,92,246,.06) 0%, transparent 60%),
-    radial-gradient(ellipse 600px 400px at 80% 80%, rgba(52,211,153,.04) 0%, transparent 60%);
-  min-height:100vh;
-}
-.container{max-width:1280px;margin:0 auto;padding:24px 28px}
-
-/* Header */
-header{
-  text-align:center;padding:40px 0 28px;
-  border-bottom:1px solid var(--border);margin-bottom:28px;
-  position:relative;
-}
-header::after{
-  content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
-  width:120px;height:2px;
-  background:linear-gradient(90deg,transparent,var(--purple),transparent);
-}
-header h1{
-  font-size:36px;font-weight:800;letter-spacing:-0.5px;
-  color:var(--white);margin-bottom:6px;
-  text-shadow:0 0 40px rgba(139,92,246,.3);
-}
-header h1 span{
-  background:linear-gradient(135deg,var(--purple),var(--cyan));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-header .sub{color:var(--dim);font-size:13px;letter-spacing:.5px}
-
-/* Tabs */
-.tabs{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;justify-content:center}
-.tab{
-  padding:10px 20px;
-  background:rgba(18,18,35,.6);
-  border:1px solid var(--border);
-  border-radius:12px;cursor:pointer;
-  font-size:13px;font-weight:500;color:var(--dim);
-  transition:all .25s cubic-bezier(.4,0,.2,1);
-  backdrop-filter:blur(8px);
-}
-.tab:hover{
-  background:rgba(139,92,246,.15);color:var(--purple);
-  border-color:rgba(139,92,246,.3);
-  transform:translateY(-1px);
-}
-.tab.active{
-  background:linear-gradient(135deg,var(--purple2),var(--purple3));
-  color:#fff;border-color:var(--purple);
-  box-shadow:var(--glow-purple);
-}
-
-/* Panels */
-.panel{display:none;animation:fadeIn .4s ease}
-.panel.active{display:block}
-
-/* Grid */
-.grid{display:grid;gap:18px}
-.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.g1{grid-template-columns:1fr}
-
-/* Cards — glassmorphism */
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;padding:22px;
-  transition:all .3s cubic-bezier(.4,0,.2,1);
-  backdrop-filter:blur(12px);
-  position:relative;overflow:hidden;
-}
-.card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(139,92,246,.3),transparent);
-}
-.card:hover{
-  border-color:rgba(139,92,246,.35);
-  box-shadow:0 8px 32px rgba(0,0,0,.3),0 0 0 1px rgba(139,92,246,.1);
-  transform:translateY(-2px);
-}
-.card h3{
-  font-size:11px;text-transform:uppercase;letter-spacing:2.5px;
-  color:var(--purple);margin-bottom:12px;font-weight:600;
-}
-.card .big{font-size:34px;font-weight:800;color:var(--white);letter-spacing:-.5px}
-.card .sub{font-size:13px;color:var(--dim);margin-top:6px}
-.neg{color:var(--red)}.pos{color:var(--green)}
-
-/* Tables */
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{
-  text-align:left;padding:12px 14px;
-  background:rgba(139,92,246,.06);
-  color:var(--purple);font-size:10px;
-  text-transform:uppercase;letter-spacing:1.5px;
-  border-bottom:1px solid rgba(139,92,246,.15);
-  font-weight:600;
-}
-td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04)}
-tr{transition:background .2s}
-tr:hover td{background:rgba(139,92,246,.04)}
-
-/* Badges */
-.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
-.badge-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.2)}
-.badge-red{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.2)}
-.badge-purple{background:rgba(139,92,246,.12);color:var(--purple);border:1px solid rgba(139,92,246,.2)}
-.badge-gold{background:rgba(251,191,36,.12);color:var(--gold);border:1px solid rgba(251,191,36,.2)}
-
-/* Quote */
-.quote{
-  background:rgba(139,92,246,.05);
-  border-left:3px solid var(--purple);
-  padding:16px 20px;border-radius:0 12px 12px 0;
-  margin:12px 0;font-style:italic;font-size:14px;
-  border:1px solid rgba(139,92,246,.08);border-left:3px solid var(--purple);
-}
-
-/* News */
-.news-item{padding:16px 0;border-bottom:1px solid rgba(255,255,255,.04)}.news-item:last-child{border:none}
-.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;margin-right:8px;font-weight:600}
-
-/* Footer */
-footer{
-  text-align:center;padding:36px 0;color:#334155;font-size:12px;
-  border-top:1px solid var(--border);margin-top:36px;letter-spacing:.5px;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--purple2);border-radius:3px}
-
-/* ═══ CHART STYLES ═══ */
-.bar-chart{display:flex;flex-direction:column;gap:16px}
-.bar-row{display:flex;align-items:center;gap:12px}
-.bar-label{width:110px;font-size:12px;text-align:right;color:var(--dim);flex-shrink:0;font-weight:500}
-.bar-track{flex:1;height:32px;background:rgba(255,255,255,.03);border-radius:8px;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.04)}
-.bar-fill{height:100%;border-radius:7px;display:flex;align-items:center;padding-left:12px;font-size:12px;font-weight:700;color:#fff;transition:width 1s ease}
-.bar-val{width:60px;font-size:13px;font-weight:700;color:var(--white);flex-shrink:0}
-
-.scatter{position:relative;height:320px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);margin:20px 10px 40px 60px}
-.scatter .axis-label{position:absolute;font-size:11px;color:var(--dim);font-weight:500}
-.scatter .x-label{bottom:-28px;transform:translateX(-50%)}
-.scatter .y-label{left:-55px;top:50%;transform:translateY(-50%) rotate(-90deg);white-space:nowrap}
-.scatter .dot{position:absolute;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%);cursor:pointer;transition:all .2s;z-index:2;box-shadow:0 0 12px currentColor}
-.scatter .dot:hover{transform:translate(-50%,-50%) scale(1.6);z-index:3}
-.scatter .dot-label{position:absolute;font-size:11px;white-space:nowrap;transform:translateX(-50%);top:18px;left:50%;color:var(--dim)}
-.scatter .grid-line{position:absolute;background:rgba(255,255,255,.03)}
-.scatter .grid-h{height:1px;left:0;right:0}
-.scatter .grid-v{width:1px;top:0;bottom:0}
-
-.growth-chart{position:relative;height:280px;border-left:1px solid var(--border);border-bottom:1px solid var(--border);margin:20px 10px 40px 60px}
-.growth-chart .axis-label{position:absolute;font-size:11px;color:var(--dim);font-weight:500}
-.growth-chart .x-label{bottom:-28px;transform:translateX(-50%)}
-.growth-chart .y-label{left:-55px;top:50%;transform:translateY(-50%) rotate(-90deg);white-space:nowrap}
-.growth-line{position:absolute;bottom:0;left:0;right:0;height:100%}
-.growth-line svg{width:100%;height:100%}
-.growth-legend{display:flex;gap:16px;justify-content:center;margin-top:8px;flex-wrap:wrap}
-.growth-legend span{font-size:11px;display:flex;align-items:center;gap:4px}
-.growth-legend .swatch{width:12px;height:3px;border-radius:2px}
-
-.pie-container{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap}
-.pie-svg{width:200px;height:200px;filter:drop-shadow(0 0 8px rgba(139,92,246,.2))}
-.pie-legend{display:flex;flex-direction:column;gap:10px}
-.pie-legend-item{display:flex;align-items:center;gap:8px;font-size:13px}
-.pie-legend-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
-
-.waterfall{display:flex;align-items:flex-end;gap:8px;height:200px;padding-top:20px}
-.wf-bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;position:relative}
-.wf-bar .wf-fill{width:100%;border-radius:6px 6px 0 0;transition:height .8s ease;min-width:30px}
-.wf-bar .wf-label{font-size:10px;color:var(--dim);margin-top:6px;text-align:center;writing-mode:horizontal-tb}
-.wf-bar .wf-val{font-size:11px;font-weight:700;color:var(--white);margin-bottom:4px}
-
-.ring-chart{display:flex;align-items:center;gap:20px}
-.ring-svg{width:120px;height:120px}
-.ring-text{font-size:22px;font-weight:700;fill:var(--white);text-anchor:middle;dominant-baseline:central}
-.ring-label{font-size:13px;color:var(--dim)}
-
-@media(max-width:768px){.g3,.g2{grid-template-columns:1fr}.tabs{justify-content:center}.bar-label{width:70px;font-size:11px}header h1{font-size:28px}.container{padding:16px}}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0f0f23; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+h1 { font-size: 28px; margin-bottom: 5px; background: linear-gradient(135deg, #e94560, #f5a623); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.subtitle { color: #888; font-size: 14px; margin-bottom: 30px; }
+.card { background: #1a1a2e; border-radius: 12px; padding: 25px; margin-bottom: 20px; border: 1px solid #2a2a4a; }
+.card h2 { font-size: 18px; margin-bottom: 15px; color: #e94560; }
+.card h3 { font-size: 15px; margin-bottom: 10px; color: #f5a623; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+.stat { text-align: center; padding: 15px; background: #16213e; border-radius: 8px; }
+.stat .value { font-size: 24px; font-weight: bold; }
+.stat .value.red { color: #e94560; }
+.stat .value.orange { color: #f5a623; }
+.stat .value.green { color: #4ecdc4; }
+.stat .label { font-size: 12px; color: #888; margin-top: 5px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 10px 12px; text-align: center; border-bottom: 1px solid #2a2a4a; }
+th { background: #16213e; color: #f5a623; font-weight: 600; }
+tr:hover { background: #1f2a42; }
+.risk-bar { display: flex; gap: 5px; margin: 15px 0; }
+.risk-segment { flex: 1; padding: 8px; text-align: center; border-radius: 6px; font-size: 13px; font-weight: bold; }
+.risk-green { background: #1a4a3a; color: #4ecdc4; }
+.risk-yellow { background: #4a3a1a; color: #f5a623; }
+.risk-red { background: #4a1a1a; color: #e94560; }
+.risk-current { box-shadow: 0 0 10px rgba(233,69,96,0.6); border: 2px solid #e94560; }
+.risk-indicator { display: inline-block; padding: 4px 16px; border-radius: 20px; font-weight: bold; font-size: 16px; }
+.risk-indicator.red { background: #4a1a1a; color: #e94560; border: 1px solid #e94560; }
+.risk-indicator.yellow { background: #4a3a1a; color: #f5a623; border: 1px solid #f5a623; }
+.risk-indicator.green { background: #1a4a3a; color: #4ecdc4; border: 1px solid #4ecdc4; }
+.chart-container { background: #1a1a2e; border-radius: 12px; padding: 5px; }
+.chart-container img { width: 100%; height: auto; border-radius: 8px; }
+.source-item { padding: 5px 0; border-bottom: 1px solid #2a2a4a; font-size: 13px; line-height: 1.6; }
+.source-item:last-child { border: none; }
+.source-item .label { color: #f5a623; font-weight: 600; }
+ul { padding-left: 20px; font-size: 13px; line-height: 1.8; }
+li { margin-bottom: 5px; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin-right: 4px; }
+.tag-rvd { background: #2a1a4a; color: #a78bfa; }
+.tag-hkma { background: #1a2a4a; color: #60a5fa; }
+.tag-csd { background: #1a4a2a; color: #34d399; }
+@media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } .grid-3 { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 <div class="container">
 
-<header>
-  <h1>🪽 <span>RM</span> Selling Dashboard</h1>
-  <div class="sub">2026-04-24 (星期五) · Powered by Hermes × Grok · Stealth Mode 🕵️</div>
-</header>
+<h1>🏠 YMS 住宅物業 Yield-Mortgage Spread 分析</h1>
+<div class="subtitle">量化分析報告 | 數據截至 2026年2月 | 由 Hermes AI Agent 自動生成</div>
 
-<div class="tabs">
-  <div class="tab" onclick="show('market')">📊 市場快訊</div>
-  <div class="tab" onclick="show('viz')">📈 產品可視化</div>
-  <div class="tab" onclick="show('client')">👤 客人推薦</div>
-  <div class="tab" onclick="show('rebuttal')">⚔️ Rebuttal</div>
-  <div class="tab" onclick="show('mortgage')">🏠 按揭</div>
+<!-- Chart -->
+<div class="card" style="padding: 10px;">
+<div class="chart-container">
+<img src="yms_chart.png" alt="YMS Trend Chart with 125-SMA">
+<div style="text-align:center;padding:8px;color:#888;font-size:12px;">白色粗線 = YMS (LTV=60%) 嘅 125期簡單移動平均線 (SMA-125)</div>
+</div>
 </div>
 
-<!-- ═══ PANEL 1: 市場快訊 ═══ -->
-<div id="market" class="panel active">
-  <div class="grid g3" style="margin-bottom:20px">
-    <div class="card"><h3>₿ Bitcoin</h3><div class="big">$77,800</div><div class="sub neg">▼ -1.2% (24h)</div></div>
-    <div class="card"><h3>📈 恒生指數</h3><div class="big">25,915</div><div class="sub neg">▼ -248 點 (-0.95%)</div></div>
-    <div class="card"><h3>🌡️ 香港天氣</h3><div class="big">19-24°C</div><div class="sub">多雲有驟雨 · 雷暴</div></div>
-  </div>
-  <div class="card">
-    <h3>🌍 國際要聞 → Selling Angle</h3>
-    <div class="news-item"><span class="tag" style="background:rgba(139,92,246,.15);color:var(--purple)">地緣政治</span><strong>美伊停火無限期延長</strong> → 美股創新高<div class="sub" style="margin-top:4px">💬 市場風險降溫，趁低位入市平衡基金</div></div>
-    <div class="news-item"><span class="tag" style="background:rgba(245,158,11,.15);color:var(--gold)">能源</span><strong>霍爾木茲海峽局勢</strong> → 油價波動<div class="sub" style="margin-top:4px">💬 能源波動下，建議分散投資</div></div>
-    <div class="news-item"><span class="tag" style="background:rgba(239,68,68,.15);color:var(--red)">貿易</span><strong>特朗普關稅持續</strong> → 通脹壓力<div class="sub" style="margin-top:4px">💬 定存跑輸，轉做抗通脹資產</div></div>
-  </div>
-</div>
-
-<!-- ═══ PANEL 2: 產品可視化 ═══ -->
-<div id="viz" class="panel">
-
-<!-- Chart 1: 預期回報比較 -->
-<div class="card" style="margin-bottom:20px">
-  <h3>📊 預期年化回報比較 (10年視角)</h3>
-  <div class="bar-chart">
-    <div class="bar-row">
-      <div class="bar-label">儲蓄保險</div>
-      <div class="bar-track"><div class="bar-fill" style="width:46%;background:linear-gradient(90deg,var(--purple),var(--purple2))">3.5-5.5%</div></div>
-      <div class="bar-val neg" style="font-size:11px">保底 2.5%</div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label">政府債券</div>
-      <div class="bar-track"><div class="bar-fill" style="width:29%;background:var(--cyan)">≈2.9%</div></div>
-      <div class="bar-val" style="font-size:11px;color:var(--cyan)">保底</div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label">公司債基金</div>
-      <div class="bar-track"><div class="bar-fill" style="width:50%;background:var(--blue)">3.5-6%</div></div>
-      <div class="bar-val" style="font-size:11px;color:var(--blue)">非保</div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label">股票 (恒指)</div>
-      <div class="bar-track"><div class="bar-fill" style="width:85%;background:linear-gradient(90deg,var(--green),#16a34a)">7-10%</div></div>
-      <div class="bar-val" style="font-size:11px;color:var(--red)">高波動</div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label">股票基金/ETF</div>
-      <div class="bar-track"><div class="bar-fill" style="width:75%;background:linear-gradient(90deg,var(--gold),#d97706)">5-12%</div></div>
-      <div class="bar-val" style="font-size:11px;color:var(--red)">非保</div>
-    </div>
-      <div class="bar-row">
-        <div class="bar-label" style="color:var(--dim)">定存(1年滾)</div>
-        <div class="bar-track"><div class="bar-fill" style="width:15%;background:#555">avg ≈1.5%</div></div>
-        <div class="bar-val" style="font-size:11px;color:#555">保底</div>
-      </div>
-  </div>
-</div>
-
-<!-- Chart 2: Risk vs Return Scatter -->
-<div class="card" style="margin-bottom:20px">
-  <h3>🎯 風險 vs 回報矩陣</h3>
-  <div class="scatter">
-    <div class="axis-label y-label">預期年化回報 →</div>
-    <div class="axis-label x-label">風險水平 →</div>
-    <!-- Grid lines -->
-    <div class="grid-line grid-h" style="bottom:0%"></div>
-    <div class="grid-line grid-h" style="bottom:25%"></div>
-    <div class="grid-line grid-h" style="bottom:50%"></div>
-    <div class="grid-line grid-h" style="bottom:75%"></div>
-    <div class="grid-line grid-v" style="left:0%"></div>
-    <div class="grid-line grid-v" style="left:25%"></div>
-    <div class="grid-line grid-v" style="left:50%"></div>
-    <div class="grid-line grid-v" style="left:75%"></div>
-    <!-- Axis labels -->
-    <div class="axis-label x-label" style="left:0%">低</div>
-    <div class="axis-label x-label" style="left:100%">高</div>
-    <div class="axis-label y-label" style="bottom:0%;left:-50px;transform:none;font-size:10px">2%</div>
-    <div class="axis-label y-label" style="bottom:95%;left:-50px;transform:none;font-size:10px">12%</div>
-    <!-- Dots -->
-    <div class="dot" style="left:15%;bottom:30%;background:var(--purple)" title="儲蓄保險: 低風險 3.5-5.5%">
-      <div class="dot-label">儲蓄保險</div>
-    </div>
-    <div class="dot" style="left:10%;bottom:15%;background:var(--cyan)" title="政府債: 極低風險 ≈2.9%">
-      <div class="dot-label">政府債</div>
-    </div>
-    <div class="dot" style="left:35%;bottom:40%;background:var(--blue)" title="公司債: 中低風險 3.5-6%">
-      <div class="dot-label">公司債</div>
-    </div>
-    <div class="dot" style="left:80%;bottom:80%;background:var(--green)" title="股票: 高風險 7-10%">
-      <div class="dot-label">恒指</div>
-    </div>
-    <div class="dot" style="left:60%;bottom:65%;background:var(--gold)" title="股票基金: 中高風險 5-12%">
-      <div class="dot-label">股票基金</div>
-    </div>
-    <div class="dot" style="left:8%;bottom:5%;background:#555" title="定存(1年滾): 低風險 avg ≈1.5%">
-      <div class="dot-label">定存(1年滾)</div>
-    </div>
-    <!-- Sweet spot zone -->
-    <div style="position:absolute;left:10%;bottom:25%;width:40%;height:40%;background:rgba(139,92,246,.08);border:1px dashed var(--purple);border-radius:8px;display:flex;align-items:center;justify-content:center">
-      <span style="font-size:11px;color:var(--purple);opacity:.7">💡 甜蜜區</span>
-    </div>
-  </div>
-</div>
-
-<!-- Chart 3: 20年增長預測 -->
-<div class="card" style="margin-bottom:20px">
-  <h3>📈 20年增長預測 — HKD 500,000 本金</h3>
-  <div class="growth-chart">
-    <div class="axis-label y-label">總值 (萬) →</div>
-    <div class="axis-label x-label">年數 →</div>
-    <svg viewBox="0 0 500 250" preserveAspectRatio="none" style="width:100%;height:100%">
-      <!-- Grid -->
-      <line x1="0" y1="250" x2="500" y2="250" stroke="#252540" stroke-width="1"/>
-      <line x1="0" y1="187.5" x2="500" y2="187.5" stroke="#252540" stroke-width="0.5" stroke-dasharray="4"/>
-      <line x1="0" y1="125" x2="500" y2="125" stroke="#252540" stroke-width="0.5" stroke-dasharray="4"/>
-      <line x1="0" y1="62.5" x2="500" y2="62.5" stroke="#252540" stroke-width="0.5" stroke-dasharray="4"/>
-      <line x1="0" y1="0" x2="500" y2="0" stroke="#252540" stroke-width="0.5" stroke-dasharray="4"/>
-      <!-- X axis labels -->
-      <text x="0" y="248" fill="#888" font-size="10">0年</text>
-      <text x="120" y="248" fill="#888" font-size="10">5年</text>
-      <text x="245" y="248" fill="#888" font-size="10">10年</text>
-      <text x="370" y="248" fill="#888" font-size="10">15年</text>
-      <text x="480" y="248" fill="#888" font-size="10">20年</text>
-      <!-- Y axis labels -->
-      <text x="-5" y="250" fill="#888" font-size="9" text-anchor="end">50</text>
-      <text x="-5" y="190" fill="#888" font-size="9" text-anchor="end">75</text>
-      <text x="-5" y="128" fill="#888" font-size="9" text-anchor="end">100</text>
-      <text x="-5" y="65" fill="#888" font-size="9" text-anchor="end">125</text>
-      <text x="-5" y="5" fill="#888" font-size="9" text-anchor="end">150</text>
-
-      <!-- 定存 1.5%: 50→67萬 -->
-      <polyline points="0,250 120,242 245,233 370,224 500,207" fill="none" stroke="#555" stroke-width="2"/>
-      <circle cx="500" cy="207" r="4" fill="#555"/>
-      <text x="460" y="201" fill="#555" font-size="9">67萬</text>
-
-      <!-- 儲蓄保險 4.5%: 50→120萬 -->
-      <polyline points="0,250 120,223 245,196 370,162 500,120" fill="none" stroke="#8B5CF6" stroke-width="2.5"/>
-      <circle cx="500" cy="120" r="4" fill="#8B5CF6"/>
-      <text x="455" y="114" fill="#8B5CF6" font-size="9">120萬</text>
-
-      <!-- 平衡基金 6.5%: 50→182萬 -->
-      <polyline points="0,250 120,212 245,168 370,110 500,40" fill="none" stroke="#22c55e" stroke-width="2.5"/>
-      <circle cx="500" cy="40" r="4" fill="#22c55e"/>
-      <text x="448" y="34" fill="#22c55e" font-size="9">182萬</text>
-
-      <!-- 恒指 8.5%: 50→247萬 -->
-      <polyline points="0,250 120,203 245,143 370,65 500,-10" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6"/>
-      <circle cx="480" cy="5" r="4" fill="#f59e0b"/>
-      <text x="430" y="0" fill="#f59e0b" font-size="9">247萬*</text>
-    </svg>
-  </div>
-  <div class="growth-legend">
-    <span><span class="swatch" style="background:#555"></span>定存(1年滾) avg 1.5%</span>
-    <span><span class="swatch" style="background:var(--purple)"></span>儲蓄保險 4.5%</span>
-    <span><span class="swatch" style="background:var(--green)"></span>平衡基金 6.5%</span>
-    <span><span class="swatch" style="background:var(--gold);border-bottom:2px dashed var(--gold)"></span>恒指 8.5%*</span>
-    <div class="sub" style="width:100%;text-align:center">*恒指回報非保證，歷史波動大</div>
-  </div>
-</div>
-
-<!-- Chart 4: 建議配置 Pie + 水位圖 -->
-<div class="grid g2" style="margin-bottom:20px">
-  <div class="card">
-    <h3>💰 建議配置 — 50萬分配</h3>
-    <div class="pie-container">
-      <svg class="pie-svg" viewBox="0 0 42 42">
-        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#252540" stroke-width="5"/>
-        <!-- MPF 30% -->
-        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#8B5CF6" stroke-width="5"
-          stroke-dasharray="30 70" stroke-dashoffset="25" stroke-linecap="round"/>
-        <!-- ILAS 30% -->
-        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#6d28d9" stroke-width="5"
-          stroke-dasharray="30 70" stroke-dashoffset="95" stroke-linecap="round"/>
-        <!-- Fund 40% -->
-        <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#22c55e" stroke-width="5"
-          stroke-dasharray="40 60" stroke-dashoffset="65" stroke-linecap="round"/>
-        <text class="ring-text" x="21" y="21" style="font-size:7px">50萬</text>
-      </svg>
-      <div class="pie-legend">
-        <div class="pie-legend-item"><div class="pie-legend-dot" style="background:var(--purple)"></div><strong>MPF TVC</strong> 15萬 (30%)</div>
-        <div class="pie-legend-item"><div class="pie-legend-dot" style="background:var(--purple2)"></div><strong>ILAS</strong> 15萬 (30%)</div>
-        <div class="pie-legend-item"><div class="pie-legend-dot" style="background:var(--green)"></div><strong>平衡基金</strong> 20萬 (40%)</div>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
-          <div style="font-size:12px;color:var(--dim)">預計年化</div>
-          <div style="font-size:24px;font-weight:700;color:var(--green)">5-6.5%</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h3>📊 定存 vs 推薦組合 — 20年後</h3>
-    <div class="waterfall" style="height:220px;padding-top:30px">
-      <div class="wf-bar">
-        <div class="wf-val">50萬</div>
-        <div class="wf-fill" style="height:80px;background:#555"></div>
-        <div class="wf-label">本金</div>
-      </div>
-      <div class="wf-bar">
-        <div class="wf-val neg">67萬</div>
-        <div class="wf-fill" style="height:107px;background:linear-gradient(180deg,#666,#444)"></div>
-        <div class="wf-label">定存(1年滾)<br>avg 1.5%</div>
-      </div>
-      <div class="wf-bar">
-        <div class="wf-val" style="color:var(--purple)">120萬</div>
-        <div class="wf-fill" style="height:192px;background:linear-gradient(180deg,var(--purple),var(--purple2))"></div>
-        <div class="wf-label">儲蓄保險<br>4.5%</div>
-      </div>
-      <div class="wf-bar">
-        <div class="wf-val pos">182萬</div>
-        <div class="wf-fill" style="height:220px;background:linear-gradient(180deg,var(--green),#16a34a)"></div>
-        <div class="wf-label">推薦組合<br>6.5%</div>
-      </div>
-    </div>
-    <div style="text-align:center;margin-top:8px">
-      <span class="badge badge-green" style="font-size:13px;padding:4px 12px">推薦組合 多賺 115萬 vs 定存(1年滾)</span>
-    </div>
-  </div>
-</div>
-
-<!-- Chart 5: 產品雷達對比 -->
+<!-- Executive Summary -->
 <div class="card">
-  <h3>🕸️ 產品綜合評分對比</h3>
-  <table>
-    <tr>
-      <th>維度</th>
-      <th style="text-align:center">儲蓄保險</th>
-      <th style="text-align:center">政府債</th>
-      <th style="text-align:center">公司債</th>
-      <th style="text-align:center">股票</th>
-      <th style="text-align:center">股票基金</th>
-      <th style="text-align:center">定存</th>
-    </tr>
-    <tr>
-      <td>回報潛力</td>
-      <td style="text-align:center">⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐⭐</td>
-      <td style="text-align:center">⭐</td>
-    </tr>
-    <tr>
-      <td>本金安全</td>
-      <td style="text-align:center">⭐⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐</td>
-      <td style="text-align:center">⭐</td>
-      <td style="text-align:center">⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐⭐⭐</td>
-    </tr>
-    <tr>
-      <td>流動性</td>
-      <td style="text-align:center">⭐</td>
-      <td style="text-align:center">⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐⭐</td>
-    </tr>
-    <tr>
-      <td>保障功能</td>
-      <td style="text-align:center">⭐⭐⭐⭐⭐</td>
-      <td style="text-align:center">⭐</td>
-      <td style="text-align:center">⭐</td>
-      <td style="text-align:center">⭐</td>
-      <td style="text-align:center">⭐</td>
-      <td style="text-align:center">⭐</td>
-    </tr>
-    <tr>
-      <td>稅務優惠</td>
-      <td style="text-align:center">⭐⭐⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐</td>
-      <td style="text-align:center">⭐⭐</td>
-      <td style="text-align:center">⭐⭐</td>
-      <td style="text-align:center">⭐⭐</td>
-      <td style="text-align:center">⭐</td>
-    </tr>
-    <tr>
-      <td>抗通脹</td>
-      <td style="text-align:center">⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐⭐⭐</td>
-      <td style="text-align:center">⭐⭐⭐⭐</td>
-      <td style="text-align:center">⭐</td>
-    </tr>
-  </table>
+<h2>📋 執行摘要</h2>
+<p style="line-height:1.8;font-size:14px;">
+本報告基於差餉物業估價署（RVD）及香港金融管理局（HKMA）官方數據，計算香港私人住宅物業的YMS（Yield-Mortgage Spread，回報率與按揭息差）。YMS是衡量住宅物業投資回報相對於融資成本的關鍵指標。
+<br><br>
+<strong>截至2026年2月</strong>，香港私人住宅的整體平均<strong>毛回報率為2.80%</strong>，扣除1.8%持有成本後的<strong>淨回報率僅1.00%</strong>。與此同時，1個月HIBOR（銀行同業拆息）處於2.41%水平。在60%按揭成數（LTV）假設下，<strong>YMS為-0.45%</strong>，已連續<strong>7個月</strong>處於負值區間。這意味著即使承造六成按揭，租金回報已無法完全覆蓋按揭利息成本，物業投資者處於<span style="color:#e94560;font-weight:bold;">「負現金流」</span>狀態。
+<br><br>
+目前YMS水平雖仍遠優於1997年亞洲金融風暴期間的極端情況（YMS一度低見-3.22%），但已低於2021年市場高峰期的+0.26%水平，並正在逼近2008年金融海嘯後的負值區域。與2003年SARS後YMS高達+2.82%的極佳回報率相比，目前市場環境已出現根本性逆轉。
+</p>
 </div>
 
-</div>
-
-<!-- ═══ PANEL 3: 客人推薦 ═══ -->
-<div id="client" class="panel">
-  <div class="card" style="margin-bottom:20px">
-    <h3>👤 案例: 45歲 · 月入HKD 80,000 · 可投資 HKD 500,000</h3>
-    <div class="sub" style="margin-bottom:16px">風險偏好: 中等 · 目標: 退休規劃 · 現有: 只有定存</div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
-      <div style="background:var(--card2);padding:14px;border-radius:10px;text-align:center">
-        <div style="color:var(--purple);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">MPF TVC</div>
-        <div style="font-size:24px;font-weight:700;color:var(--white)">15萬</div>
-        <div class="sub">30% · 扣稅+穩陣</div>
-      </div>
-      <div style="background:var(--card2);padding:14px;border-radius:10px;text-align:center">
-        <div style="color:var(--purple);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">ILAS</div>
-        <div style="font-size:24px;font-weight:700;color:var(--white)">15萬</div>
-        <div class="sub">30% · 保障+增值</div>
-      </div>
-      <div style="background:var(--card2);padding:14px;border-radius:10px;text-align:center">
-        <div style="color:var(--green);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">平衡基金</div>
-        <div style="font-size:24px;font-weight:700;color:var(--white)">20萬</div>
-        <div class="sub">40% · 流動+派息</div>
-      </div>
-    </div>
-  </div>
-  <div class="grid g3">
-    <div class="card"><h3>1️⃣ MPF TVC</h3><div class="quote">每年最高6萬可扣稅，即時慳稅最多1萬幾</div><div style="font-size:13px;color:var(--dim)"><p><strong style="color:var(--white)">Rebuttal:</strong></p><p>「鎖住錢？」→ 65歲先提取，但回報高好多</p><p>「怕跌？」→ 中等風險，跌市都比定存強</p></div></div>
-    <div class="card"><h3>2️⃣ ILAS</h3><div class="quote">股票60%+債券40%，預期年化5-8%，有壽險保障</div><div style="font-size:13px;color:var(--dim)"><p><strong style="color:var(--white)">Rebuttal:</strong></p><p>「保險費用高？」→ 現代ILAS零前端收費</p><p>「市場跌？」→ 分散投資+定期再平衡</p></div></div>
-    <div class="card"><h3>3️⃣ 平衡基金</h3><div class="quote">自動分散全球股票+債券+REITs，年化5-7%，可每月派息</div><div style="font-size:13px;color:var(--dim)"><p><strong style="color:var(--white)">Rebuttal:</strong></p><p>「麻煩？」→ App一click搞掂</p><p>「無保證？」→ 歷史長期正回報，遠勝定存</p></div></div>
-  </div>
-</div>
-
-<!-- ═══ PANEL 4: REBUTTAL ═══ -->
-<div id="rebuttal" class="panel">
-  <div class="card" style="margin-bottom:20px"><h3>⚔️ 案例: HSBC 4.5% 定存 vs 我哋 3.8%</h3><div class="sub">客人叫我哋 match HSBC offer — 三個 Approach</div></div>
-  <div class="card" style="margin-bottom:16px">
-    <h3 style="color:var(--green)">Approach 1: 探問 + 條件比較法（最安全）</h3>
-    <div class="quote">「先生，我明白你喺 HSBC 有 4.5% 一年定存嘅 offer，聽落真係吸引。我可唔可以問清楚啲？係新資金先有呢個 rate 嗎？存款額係幾多？係港元定美元？有冇其他條件？<br><br>我哋而家標準 rate 係 3.8%，但如果你嘅條件 match 到，我即刻幫你申請 special rate 同上級 match，甚至有可能加埋其他優惠。」</div>
-    <div class="sub">✅ 唔係即刻拒絕，仲可以爭取 match 機會</div>
-  </div>
-  <div class="card" style="margin-bottom:16px">
-    <h3 style="color:var(--gold)">Approach 2: 價值導向法（拉高到整體價值）</h3>
-    <div class="quote">「HSBC 4.5% 聽落唔錯，但我哋 3.8% 其實好接近。HSBC 呢個 offer 多數有 hidden 條件。<br><br>但我哋最大優勢係整體配套：你 50 萬想做退休規劃，我哋可以轉做平衡基金或 ILAS，預期年化 5-7%，遠遠跑贏 4.5% 定存，仲有壽險保障同扣稅好處。要唔要我即刻計畀你睇 20 年後差幾多？」</div>
-    <div class="sub">✅ 自然轉去推薦產品，突出長期價值</div>
-  </div>
-  <div class="card" style="margin-bottom:16px">
-    <h3 style="color:var(--red)">Approach 3: 直接承認 + Pivot（最強勢）</h3>
-    <div class="quote">「老實講，4.5% 定存好多係短期 promotion。以你 45 歲、月入 8 萬、想做退休規劃嚟講，純放定存最唔抵——跑輸通脹，20 年後錢少好多。<br><br>我建議 50 萬一部分放定存保本，一部分做平衡基金或 ILAS，預期長線 6%+，退休時增值到 100 萬以上。你想我計畀你睇，定係一齊比較兩個方案？」</div>
-    <div class="sub">✅ 直接承認 rate 差，即刻 pivot 去客嘅痛點，最易 close</div>
-  </div>
-  <div class="card">
-    <h3>💡 導師 Tips</h3>
-    <div style="counter-reset:step">
-      <div style="display:flex;gap:14px;margin:14px 0;align-items:flex-start"><div style="min-width:28px;height:28px;background:var(--purple);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">1</div><div>每種 approach 完都要即刻問問題（你要唔要...？你覺得呢？）</div></div>
-      <div style="display:flex;gap:14px;margin:14px 0;align-items:flex-start"><div style="min-width:28px;height:28px;background:var(--purple);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">2</div><div>語氣要<strong style="color:var(--white)">笑住講</strong>，唔好 defensive</div></div>
-      <div style="display:flex;gap:14px;margin:14px 0;align-items:flex-start"><div style="min-width:28px;height:28px;background:var(--purple);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">3</div><div>客死咬 rate？用 <strong style="color:var(--red)">Approach 3</strong> 最硬</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ PANEL 5: 按揭 ═══ -->
-<div id="mortgage" class="panel">
-
-<div class="grid g2" style="margin-bottom:20px">
-<!-- Calculator -->
+<!-- Key Statistics -->
+<div class="grid-3">
 <div class="card">
-  <h3>🧮 按揭計算機</h3>
-  <div style="display:grid;gap:12px">
-    <div>
-      <label style="font-size:12px;color:var(--dim)">物業類型</label>
-      <select id="propType" onchange="calcMortgage()" style="width:100%;padding:8px;background:var(--card2);border:1px solid var(--border);border-radius:6px;color:var(--white);font-size:14px">
-        <option value="private">私樓</option>
-        <option value="new_housing_new">一手居屋（新）</option>
-        <option value="new_housing_old">二手居屋 - 已補地價</option>
-        <option value="new_housing_unpaid">二手居屋 - 未補地價</option>
-      </select>
-    </div>
-    <div>
-      <label style="font-size:12px;color:var(--dim)">物業價值 (HKD)</label>
-      <input id="propValue" type="number" value="6000000" oninput="calcMortgage()" style="width:100%;padding:8px;background:var(--card2);border:1px solid var(--border);border-radius:6px;color:var(--white);font-size:14px">
-    </div>
-    <div>
-      <label style="font-size:12px;color:var(--dim)">按揭計劃</label>
-      <select id="rateType" onchange="calcMortgage()" style="width:100%;padding:8px;background:var(--card2);border:1px solid var(--border);border-radius:6px;color:var(--white);font-size:14px">
-        <option value="H">H按 (H+1.3%) — 現時 ≈3.5%</option>
-        <option value="P">P按 (P-1.75%) — 現時 3.25%</option>
-      </select>
-    </div>
-    <div>
-      <label style="font-size:12px;color:var(--dim)">按揭年期：<span id="termLabel">25</span>年</label>
-      <input id="term" type="range" min="5" max="30" value="25" oninput="calcMortgage()" style="width:100%;accent-color:var(--purple)">
-    </div>
-    <div>
-      <label style="font-size:12px;color:var(--dim)">按揭成數：<span id="ltvLabel">70</span>%</label>
-      <input id="ltv" type="range" min="10" max="95" step="5" value="70" oninput="calcMortgage()" style="width:100%;accent-color:var(--purple)">
-    </div>
-  </div>
+<h3>毛回報率 (Gross Yield)</h3>
+<div class="stat">
+<div class="value orange">2.80%</div>
+<div class="label">2026年2月數據</div>
 </div>
-
-<!-- Results -->
+</div>
 <div class="card">
-  <h3>📊 計算結果</h3>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-    <div style="background:var(--card2);padding:14px;border-radius:10px;text-align:center">
-      <div style="font-size:11px;color:var(--dim);text-transform:uppercase">貸款額</div>
-      <div id="loanAmt" style="font-size:24px;font-weight:700;color:var(--white)">4,200,000</div>
-    </div>
-    <div style="background:var(--card2);padding:14px;border-radius:10px;text-align:center">
-      <div style="font-size:11px;color:var(--dim);text-transform:uppercase">首期</div>
-      <div id="downPay" style="font-size:24px;font-weight:700;color:var(--gold)">1,800,000</div>
-    </div>
-    <div style="background:var(--card2);padding:14px;border-radius:10px;text-align:center">
-      <div style="font-size:11px;color:var(--dim);text-transform:uppercase">每月供款</div>
-      <div id="monthly" style="font-size:24px;font-weight:700;color:var(--purple)">20,917</div>
-    </div>
-    <div style="background:var(--card2);padding:14px;border-radius:10px;text-align:center">
-      <div style="font-size:11px;color:var(--dim);text-transform:uppercase">總利息</div>
-      <div id="totalInt" style="font-size:24px;font-weight:700;color:var(--red)">2,075,100</div>
-    </div>
-  </div>
-  <div style="background:var(--card2);padding:14px;border-radius:10px;text-align:center;margin-bottom:12px">
-    <div style="font-size:11px;color:var(--dim);text-transform:uppercase">實際年利率 (APR)</div>
-    <div id="apr" style="font-size:20px;font-weight:700;color:var(--green)">3.50%</div>
-  </div>
-  <div style="font-size:12px;color:var(--dim)">
-    <span id="loanRatio">借420萬 / 樓價600萬 = 70% LTV</span>
-  </div>
+<h3>淨回報率 (Net Yield)</h3>
+<div class="stat">
+<div class="value red">1.00%</div>
+<div class="label">毛回報率 - 1.8% 持有成本</div>
 </div>
 </div>
-
-<!-- Rate Table -->
-<div class="card" style="margin-bottom:20px">
-  <h3>💰 BOCHK 最新現金回贈</h3>
-  <table>
-    <tr><th>貸款額</th><th>私樓現金回贈</th><th>一手公營現金回贈</th></tr>
-    <tr><td>&lt; 100萬</td><td>0.5%</td><td>—</td></tr>
-    <tr><td>100萬 - &lt;200萬</td><td>0.55%</td><td>0.65%</td></tr>
-    <tr><td>200萬 - &lt;300萬</td><td>0.75%</td><td>0.80%</td></tr>
-    <tr><td>300萬 - &lt;400萬</td><td>0.95%</td><td>0.85%</td></tr>
-    <tr><td>400萬 - &lt;500萬</td><td>1.00%</td><td>0.925%</td></tr>
-    <tr><td>500萬 - &lt;700萬</td><td>1.05%</td><td>1.05%</td></tr>
-    <tr><td>700萬 - &lt;1000萬</td><td>1.10%</td><td>1.10%</td></tr>
-    <tr><td>≥ 1000萬</td><td>1.20%</td><td>1.20%</td></tr>
-    <tr><td>🚗 車位</td><td colspan="2">P-0.6% (不設現金回贈)</td></tr>
-  </table>
-  <div class="sub" style="margin-top:8px">按揭利率：HIBOR按 H+1.3% · Prime按 P-1.75% = 3.25% (P=5%)</div>
-</div>
-
-<!-- Process Flow -->
-<div class="card" style="margin-bottom:20px">
-  <h3>📋 按揭申請流程一覽</h3>
-  <div style="position:relative;padding:20px 0">
-
-    <!-- Step 1 -->
-    <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:0">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div style="width:44px;height:44px;background:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0">1</div>
-        <div style="width:2px;height:60px;background:linear-gradient(var(--purple),var(--purple2))"></div>
-      </div>
-      <div style="flex:1;padding-top:8px">
-        <div style="font-size:15px;font-weight:700;color:var(--white)">下載並填寫三份核心表格</div>
-        <div style="font-size:13px;color:var(--dim);margin-top:4px">
-          🔗 <a href="https://www.bochk.com/tc/more/downloadforms.html" style="color:var(--purple)" target="_blank">bochk.com/tc/more/downloadforms.html</a>
-        </div>
-        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
-          <span class="badge badge-purple">各類物業抵押貸款申請表格</span>
-          <span class="badge badge-purple">按揭資料同意書(表格一)</span>
-          <span class="badge badge-purple">土地註冊處電子提示服務同意書</span>
-        </div>
-        <div style="font-size:12px;color:var(--dim);margin-top:6px">📎 附上: 身份證 + 入息證明 + 臨約 (+ 居屋批准書如適用)</div>
-      </div>
-    </div>
-
-    <!-- Step 2 -->
-    <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:0">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div style="width:44px;height:44px;background:var(--purple2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0">2</div>
-        <div style="width:2px;height:40px;background:linear-gradient(var(--purple2),var(--blue))"></div>
-      </div>
-      <div style="flex:1;padding-top:8px">
-        <div style="font-size:15px;font-weight:700;color:var(--white)">提交申請</div>
-        <div style="font-size:13px;color:var(--dim);margin-top:4px">收到文件即刻提交，開始審批流程</div>
-      </div>
-    </div>
-
-    <!-- Step 3 -->
-    <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:0">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div style="width:44px;height:44px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0">3</div>
-        <div style="width:2px;height:40px;background:linear-gradient(var(--blue),var(--cyan))"></div>
-      </div>
-      <div style="flex:1;padding-top:8px">
-        <div style="font-size:15px;font-weight:700;color:var(--white)">出正式 Offer + 整授信函</div>
-        <div style="font-size:13px;color:var(--dim);margin-top:4px">⏱️ 預計 <span style="color:var(--gold);font-weight:700">3-4 星期</span> · 需要客人律師樓名卡</div>
-      </div>
-    </div>
-
-    <!-- Step 4 -->
-    <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:0">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div style="width:44px;height:44px;background:var(--cyan);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0">4</div>
-        <div style="width:2px;height:40px;background:linear-gradient(var(--cyan),var(--green))"></div>
-      </div>
-      <div style="flex:1;padding-top:8px">
-        <div style="font-size:15px;font-weight:700;color:var(--white)">落分行簽授信函</div>
-        <div style="font-size:13px;color:var(--dim);margin-top:4px">簽完即送律師樓</div>
-      </div>
-    </div>
-
-    <!-- Step 5 -->
-    <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:0">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div style="width:44px;height:44px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0">5</div>
-        <div style="width:2px;height:40px;background:linear-gradient(var(--green),var(--gold))"></div>
-      </div>
-      <div style="flex:1;padding-top:8px">
-        <div style="font-size:15px;font-weight:700;color:var(--white)">律師樓處理</div>
-        <div style="font-size:13px;color:var(--dim);margin-top:4px">⏱️ 至少 <span style="color:var(--gold);font-weight:700">5 個工作天</span></div>
-      </div>
-    </div>
-
-    <!-- Step 6 -->
-    <div style="display:flex;gap:16px;align-items:flex-start;margin-bottom:0">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div style="width:44px;height:44px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0">6</div>
-        <div style="width:2px;height:40px;background:linear-gradient(var(--gold),var(--green))"></div>
-      </div>
-      <div style="flex:1;padding-top:8px">
-        <div style="font-size:15px;font-weight:700;color:var(--white)">簽正式按揭契據</div>
-        <div style="font-size:13px;color:var(--dim);margin-top:4px">去律師樓簽契 + 同時交大訂</div>
-      </div>
-    </div>
-
-    <!-- Step 7 -->
-    <div style="display:flex;gap:16px;align-items:flex-start">
-      <div style="display:flex;flex-direction:column;align-items:center">
-        <div style="width:44px;height:44px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0">✓</div>
-      </div>
-      <div style="flex:1;padding-top:8px">
-        <div style="font-size:15px;font-weight:700;color:var(--green)">成交日 — 銀行放款 💰</div>
-        <div style="font-size:13px;color:var(--dim);margin-top:4px">銀行 → 律師樓 → 賣家 一筆過</div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- LTV Guide -->
 <div class="card">
-  <h3>🏠 按揭成數速查</h3>
-  <table>
-    <tr><th>物業類型</th><th>最高成數</th><th>備註</th></tr>
-    <tr><td>私樓</td><td>70%</td><td>按揭保險可達90%</td></tr>
-    <tr><td>一手居屋（白表）</td><td style="color:var(--green);font-weight:700">90%</td><td>無需補地價</td></tr>
-    <tr><td>一手居屋（綠表）</td><td style="color:var(--green);font-weight:700">95%</td><td>無需補地價</td></tr>
-    <tr><td>二手居屋（已補地價）</td><td>70%</td><td>當私樓處理</td></tr>
-
-  </table>
-  <div class="sub" style="margin-top:8px">貸款年期: 65 - 樓齡 (最長30年)</div>
+<h3>1個月HIBOR</h3>
+<div class="stat">
+<div class="value orange">2.41%</div>
+<div class="label">HKMA期末數據</div>
+</div>
+</div>
+<div class="card">
+<h3>YMS (LTV=60%)</h3>
+<div class="stat">
+<div class="value red">-0.45%</div>
+<div class="label">Yield-Mortgage Spread</div>
+</div>
+</div>
+<div class="card">
+<h3>YMS (LTV=50%)</h3>
+<div class="stat">
+<div class="value orange">-0.21%</div>
+<div class="label">敏感度分析（低按揭）</div>
+</div>
+</div>
+<div class="card">
+<h3>YMS (LTV=70%)</h3>
+<div class="stat">
+<div class="value red">-0.69%</div>
+<div class="label">敏感度分析（高按揭）</div>
+</div>
+</div>
 </div>
 
+<!-- Data Sources -->
+<div class="card">
+<h2>📁 數據來源及提取記錄</h2>
+<div class="source-item"><span class="tag tag-rvd">RVD</span> <span class="label">his_data_15.xls</span> — 私人物業的市場回報率（自1987年起），最後更新：2026年4月9日。提取住宅類別（A-E類別）每月毛回報率。</div>
+<div class="source-item"><span class="tag tag-rvd">RVD</span> <span class="label">his_data_3.xls</span> — 私人住宅租金指數（自1979年起），最後更新：2026年3月27日。用於交叉驗證。</div>
+<div class="source-item"><span class="tag tag-rvd">RVD</span> <span class="label">his_data_4.xls</span> — 私人住宅售價指數（自1979年起），最後更新：2026年3月27日。用於交叉驗證。</div>
+<div class="source-item"><span class="tag tag-hkma">HKMA</span> <span class="label">T0307.xlsx</span> — 住宅按揭統計調查，最後更新：2026年4月13日。提取新批按揭利率分佈數據。</div>
+<div class="source-item"><span class="tag tag-hkma">HKMA</span> <span class="label">T060301.xls</span> — 港元利息結算率（HIBOR Fixing），最後更新：2026年4月8日。提取1個月HIBOR期末數據（1982-2026年3月）。</div>
+<div class="source-item"><strong>計算方法：</strong> Net Yield = Gross Yield - 1.8%（標準扣除：物業稅15%×80% + 管理費約0.3% + 差餉約0.5% + 空置及維修約0.2% = 約1.8%）。YMS = Net Yield(%) - (1M HIBOR(%) × LTV)。HIBOR用作按揭利率代理變量。</div>
+<div class="source-item"><strong>最新數據月份：</strong> 2026年2月（回報率數據） / 2026年3月（HIBOR數據）</div>
 </div>
 
-<footer>🪽 4K RM Selling Dashboard · Powered by Hermes × Grok (Stealth Mode) · 2026-04-24</footer>
+<!-- Historical Analysis Table -->
+<div class="card">
+<h2>📊 歷史分析對比表</h2>
+<table>
+<thead>
+<tr>
+<th>年份／時期</th>
+<th>毛回報率</th>
+<th>淨回報率</th>
+<th>1M HIBOR</th>
+<th>YMS (LTV=60%)</th>
+<th>YMS (LTV=50%)</th>
+<th>YMS (LTV=70%)</th>
+<th>市場狀況</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1997年7月</strong><br><small>亞洲金融風暴</small></td>
+<td>~3.80%</td>
+<td>~2.00%</td>
+<td>6.80%</td>
+<td style="color:#e94560;"><strong>-2.08%</strong></td>
+<td>-1.40%</td>
+<td>-2.76%</td>
+<td>極端負息差</td>
+</tr>
+<tr>
+<td><strong>1997年8月</strong><br><small>港元狙擊</small></td>
+<td>~3.87%</td>
+<td>~2.07%</td>
+<td>8.82%</td>
+<td style="color:#e94560;"><strong>-3.22%</strong></td>
+<td>-2.34%</td>
+<td>-4.10%</td>
+<td style="color:#e94560;">⛔ 歷史最低</td>
+</tr>
+<tr>
+<td><strong>2003年6月</strong><br><small>SARS後底部</small></td>
+<td>5.24%</td>
+<td>3.44%</td>
+<td>1.11%</td>
+<td style="color:#4ecdc4;"><strong>+2.78%</strong></td>
+<td>+2.89%</td>
+<td>+2.66%</td>
+<td style="color:#4ecdc4;">✅ 最佳買點</td>
+</tr>
+<tr>
+<td><strong>2008年9月</strong><br><small>雷曼倒閉</small></td>
+<td>3.96%</td>
+<td>2.16%</td>
+<td>4.36%</td>
+<td style="color:#f5a623;"><strong>-0.45%</strong></td>
+<td>-0.02%</td>
+<td>-0.89%</td>
+<td>短暫負息差</td>
+</tr>
+<tr>
+<td><strong>2021年1月</strong><br><small>市場高峰</small></td>
+<td>2.12%</td>
+<td>0.32%</td>
+<td>0.16%</td>
+<td style="color:#4ecdc4;"><strong>+0.23%</strong></td>
+<td>+0.24%</td>
+<td>+0.21%</td>
+<td>極低息支撐</td>
+</tr>
+<tr>
+<td><strong>2026年2月</strong><br><small>最新</small></td>
+<td style="color:#e94560;"><strong>2.80%</strong></td>
+<td style="color:#e94560;"><strong>1.00%</strong></td>
+<td style="color:#f5a623;"><strong>2.41%</strong></td>
+<td style="color:#e94560;"><strong>-0.45%</strong></td>
+<td style="color:#f5a623;"><strong>-0.21%</strong></td>
+<td style="color:#e94560;"><strong>-0.69%</strong></td>
+<td style="color:#e94560;">⚠️ 負息差持續</td>
+</tr>
+</tbody>
+</table>
 </div>
 
-<script>
-function show(id){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  event.target.classList.add('active');
-}
+<!-- Risk Assessment -->
+<div class="card">
+<h2>🚨 目前市場風險評估</h2>
 
-// Mortgage Calculator
-function calcMortgage(){
-  const propVal = parseFloat(document.getElementById('propValue').value) || 0;
-  const rateType = document.getElementById('rateType').value;
-  const term = parseInt(document.getElementById('term').value);
-  const ltv = parseInt(document.getElementById('ltv').value);
-  const propType = document.getElementById('propType').value;
+<div class="grid-2">
+<div>
+<h3>YMS 最新數值</h3>
+<div class="stat">
+<div class="value red">-0.45%</div>
+<div class="label">YMS (LTV=60%) • 2026年2月</div>
+</div>
+</div>
+<div>
+<h3>負值持續時間</h3>
+<div class="stat">
+<div class="value red">7個月</div>
+<div class="label">自2025年8月起連續為負</div>
+</div>
+</div>
+</div>
 
-  // Auto-set max LTV based on property type
-  let maxLTV = 70;
-  if(propType === 'new_housing_new') maxLTV = 90; // 白表
-  if(propType === 'new_housing_unpaid') maxLTV = 90;
-  
-  document.getElementById('ltv').max = maxLTV;
-  if(ltv > maxLTV) {
-    document.getElementById('ltv').value = maxLTV;
-    return calcMortgage();
-  }
+<div class="risk-bar">
+<div class="risk-segment risk-green">🟢 安全區<br>YMS > +0.5%</div>
+<div class="risk-segment risk-yellow">🟡 警戒區<br>0% &lt; YMS ≤ +0.5%</div>
+<div class="risk-segment risk-red risk-current">🔴 危險區<br>YMS ≤ 0%</div>
+</div>
 
-  // Rate
-  const rate = rateType === 'H' ? 3.5 : 3.25; // H+1.3 ≈ 3.5%, P-1.75 = 3.25%
-  const monthlyRate = rate / 100 / 12;
-  
-  // Calculations
-  const loanAmt = propVal * ltv / 100;
-  const downPay = propVal - loanAmt;
-  const numPayments = term * 12;
-  
-  // Monthly payment (standard mortgage formula)
-  const monthly = loanAmt * monthlyRate * Math.pow(1 + monthlyRate, numPayments) / (Math.pow(1 + monthlyRate, numPayments) - 1);
-  const totalPaid = monthly * numPayments;
-  const totalInt = totalPaid - loanAmt;
+<div class="grid-2">
+<div>
+<h3>與歷史關鍵期對比</h3>
+<table>
+<thead><tr><th>時期</th><th>YMS水平</th><th>差距</th></tr></thead>
+<tbody>
+<tr><td>1997年8月（金融風暴）</td><td style="color:#e94560;">-3.22%</td><td>尚優於當時</td></tr>
+<tr><td>2003年6月（SARS底部）</td><td style="color:#4ecdc4;">+2.78%</td><td>已大幅惡化</td></tr>
+<tr><td>2008年9月（金融海嘯）</td><td style="color:#f5a623;">-0.45%</td><td>持平當年</td></tr>
+<tr><td>2021年1月（市場高峰）</td><td style="color:#4ecdc4;">+0.23%</td><td>已轉負</td></tr>
+</tbody>
+</table>
+</div>
+<div>
+<h3>風險評級</h3>
+<div style="text-align:center;padding:20px;">
+<div class="risk-indicator red">🔴 紅色警戒</div>
+<p style="margin-top:15px;font-size:13px;line-height:1.8;">
+<strong>風險因素：</strong><br>
+• YMS已連續7個月為負值，顯示住宅物業投資處於負現金流狀態<br>
+• 雖然HIBOR從2025年高點（3.95%）回落至2.41%，但回報率同樣受壓<br>
+• 與1997年金融風暴相比，目前YMS的負值幅度雖然較小（-0.45% vs -3.22%），但持續時間更長<br>
+• 2021年時YMS仍為正數（+0.23%），得益於極低利率環境；隨利率正常化，YMS已轉為負值<br>
+• 歷史上YMS由負轉正通常伴隨：利率大幅回落（2008-2009年）或回報率顯著上升（2003年）<br>
+<br>
+<strong>建議關注：</strong> 聯儲局減息周期進展、租金回報率趨勢、及銀行同業拆息變化
+</p>
+</div>
+</div>
+</div>
 
-  // Format
-  const fmt = n => Math.round(n).toLocaleString('en-US');
-  
-  document.getElementById('loanAmt').textContent = '$' + fmt(loanAmt);
-  document.getElementById('downPay').textContent = '$' + fmt(downPay);
-  document.getElementById('monthly').textContent = '$' + fmt(monthly);
-  document.getElementById('totalInt').textContent = '$' + fmt(totalInt);
-  document.getElementById('apr').textContent = rate.toFixed(2) + '%';
-  document.getElementById('termLabel').textContent = term;
-  document.getElementById('ltvLabel').textContent = ltv;
-  document.getElementById('loanRatio').textContent = 
-    '借' + fmt(loanAmt/10000) + '萬 / 樓價' + fmt(propVal/10000) + '萬 = ' + ltv + '% LTV';
-}
+<!-- Methodology -->
+<div class="card">
+<h2>🔬 計算方法說明</h2>
+<ul>
+<li><strong>毛回報率：</strong> 直接提取自RVD his_data_15.xls「Monthly(Domestic)」工作表，為A-E類別物業的平均回報率</li>
+<li><strong>淨回報率 = 毛回報率 - 1.8%：</strong> 1.8%為標準扣除，涵蓋物業稅（租金收入×80%×15%≈0.4%#）、管理費（約0.3-0.5%）、差餉（約0.5%）、空置損失（約0.2-0.3%）及維修儲備（約0.2-0.3%）。#實際物業稅按租金淨額徵收，此處為簡化估算</li>
+<li><strong>按揭利率代理變量：</strong> 使用1個月HIBOR（HKMA T060301.xls期末數據），因香港新批按揭中約85-95%以HIBOR為定價參考</li>
+<li><strong>LTV假設：</strong> 基準為60%（金管局指引上限），敏感度分析展示LTV=50%及LTV=70%的情景</li>
+<li><strong>1990-1998年數據：</strong> 使用RVD季度回報率數據及可用HIBOR數據構建</li>
+<li><strong>免責聲明：</strong> 本報告僅供參考，不構成任何投資建議。所有數據來自香港政府官方網站，分析力求客觀準確，但使用者應自行核實。</li>
+</ul>
+</div>
 
-// Init
-calcMortgage();
-</script>
+<div style="text-align:center;padding:20px;color:#666;font-size:12px;">
+Hermes AI Agent 自動生成 • 數據來源：差餉物業估價署 (RVD) 及 香港金融管理局 (HKMA) • 報告時間：2026年4月25日
+</div>
+</div>
 </body>
 </html>
