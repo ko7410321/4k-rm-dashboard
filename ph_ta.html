@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>私人住宅價格指數技術分析 | 4KGOR</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0f0f23; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; }
+.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+h1 { font-size: 28px; margin-bottom: 5px; background: linear-gradient(135deg, #4ecdc4, #f5a623); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.subtitle { color: #888; font-size: 14px; margin-bottom: 30px; }
+.navbar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.navbar a { padding: 8px 18px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; }
+.navbar .active { background: #2a2a4a; color: #4ecdc4; border: 1px solid #4ecdc4; }
+.navbar .inactive { background: #1a1a2e; color: #888; border: 1px solid #2a2a4a; }
+.navbar .inactive:hover { background: #2a2a4a; color: #f5a623; }
+.card { background: #1a1a2e; border-radius: 12px; padding: 25px; margin-bottom: 20px; border: 1px solid #2a2a4a; }
+.card h2 { font-size: 18px; margin-bottom: 15px; color: #4ecdc4; }
+.card h3 { font-size: 15px; margin-bottom: 10px; color: #f5a623; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+.stat { text-align: center; padding: 15px; background: #16213e; border-radius: 8px; }
+.stat .value { font-size: 24px; font-weight: bold; }
+.stat .value.green { color: #4ecdc4; }
+.stat .value.yellow { color: #f5a623; }
+.stat .value.red { color: #e94560; }
+.stat .value.orange { color: #ff8c42; }
+.stat .value.purple { color: #a78bfa; }
+.stat .label { font-size: 12px; color: #888; margin-top: 5px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 10px 12px; text-align: center; border-bottom: 1px solid #2a2a4a; }
+th { background: #16213e; color: #f5a623; font-weight: 600; }
+tr:hover { background: #1f2a42; }
+.phase-card { padding: 15px; border-radius: 8px; margin-bottom: 8px; font-size: 14px; }
+.phase-current { border: 2px solid #4ecdc4; box-shadow: 0 0 15px rgba(78,205,196,0.3); }
+.phase-label { font-weight: 700; margin-bottom: 4px; }
+.phase-desc { font-size: 13px; opacity: 0.85; line-height: 1.6; }
+.phase-active { font-size: 18px; font-weight: 700; padding: 12px 20px; border-radius: 10px; text-align: center; }
+.legend-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.legend-item { padding: 6px 12px; border-radius: 6px; font-size: 12px; }
+.chart-container { background: #1a1a2e; border-radius: 12px; padding: 5px; }
+.chart-container iframe { width: 100%; height: 750px; border: none; border-radius: 8px; }
+.risk-bar { display: flex; gap: 5px; margin: 15px 0; }
+.risk-segment { flex: 1; padding: 8px; text-align: center; border-radius: 6px; font-size: 13px; font-weight: bold; }
+.risk-green { background: #1a4a3a; color: #4ecdc4; }
+.risk-yellow { background: #4a3a1a; color: #f5a623; }
+.risk-orange { background: #4a2a1a; color: #ff8c42; }
+.risk-red { background: #4a1a1a; color: #e94560; }
+.risk-current { box-shadow: 0 0 10px rgba(78,205,196,0.6); border: 2px solid #4ecdc4; }
+ul { padding-left: 20px; font-size: 13px; line-height: 1.8; }
+li { margin-bottom: 5px; }
+.ta-section { display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 14px; margin-bottom: 10px; }
+.ta-section.green { background: #1a4a3a; color: #4ecdc4; border: 1px solid #4ecdc4; }
+.ta-section.red { background: #4a1a1a; color: #e94560; border: 1px solid #e94560; }
+.ta-section.yellow { background: #4a3a1a; color: #f5a623; border: 1px solid #f5a623; }
+.ta-section.orange { background: #4a2a1a; color: #ff8c42; border: 1px solid #ff8c42; }
+@media (max-width: 768px) {
+  .grid-2, .grid-2-inline { grid-template-columns: 1fr !important; }
+  .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; }
+  .card { padding: 15px; }
+  .chart-container iframe { aspect-ratio: 4/3; height: auto !important; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-wrap table { min-width: 620px; }
+  .table-wrap table th, .table-wrap table td { padding: 8px 6px; font-size: 12px; white-space: nowrap; }
+  h1 { font-size: 22px; }
+  .container { padding: 12px; }
+  .risk-bar { flex-direction: column; }
+  .stat .value { font-size: 20px; }
+  .subtitle { font-size: 12px; }
+  .navbar a { font-size: 12px; padding: 6px 12px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="navbar">
+  <a href="./" class="inactive">🏠 YMS Dashboard</a>
+  <a href="./ph_ta.html" class="active">📊 價格指數技術分析</a>
+</div>
+
+<h1>📊 私人住宅售價指數 — 技術分析</h1>
+<div class="subtitle">9EMA / 21EMA 交叉策略 | 月線級別分析 | 數據截至 2026年2月</div>
+
+<!-- Current Market Status -->
+<div class="card">
+  <h2>🎯 目前市況判斷</h2>
+  <div class="phase-active" style="background: #2a1a0a; border: 2px solid #ff8c42; color: #ff8c42;">
+    🔶 反彈突破期（Deep Bounce）
+  </div>
+  <p style="text-align:center;margin-top:12px;font-size:14px;line-height:1.8;">
+    <strong>現況：</strong>價格（<b style="color:#4ecdc4;">307.6</b>）> <b style="color:#ff8c42;">21EMA（299.4）</b>> <b style="color:#4ecdc4;">9EMA（298.0）</b><br>
+    雖然9EMA（<b style="color:#e94560;">298.0</b>）仍在21EMA（<b style="color:#ff8c42;">299.4</b>）之下，處於死亡交叉格局<br>
+    但<b style="color:#4ecdc4;">價格已連續4個月站上兩條EMA</b>，走勢正從弱勢轉強<br>
+    <b>關鍵觀察：</b>若9EMA升穿21EMA將形成黃金交叉，確認趨勢逆轉
+  </p>
+</div>
+
+<!-- Key Stats -->
+<div class="grid-4">
+  <div class="card">
+    <h3>最新指數</h3>
+    <div class="stat">
+      <div class="value green">307.6</div>
+      <div class="label">2026年2月</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>9EMA（月）</h3>
+    <div class="stat">
+      <div class="value yellow">298.0</div>
+      <div class="label">9個月指數移動平均</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>21EMA（月）</h3>
+    <div class="stat">
+      <div class="value orange">299.4</div>
+      <div class="label">21個月指數移動平均</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>EMA差值</h3>
+    <div class="stat">
+      <div class="value red">-1.39</div>
+      <div class="label">9EMA - 21EMA</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-3">
+  <div class="card">
+    <h3>黃金交叉次數</h3>
+    <div class="stat">
+      <div class="value green">4次</div>
+      <div class="label">歷史總計（自1993）</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>死亡交叉次數</h3>
+    <div class="stat">
+      <div class="value red">4次</div>
+      <div class="label">歷史總計（自1993）</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>最近交叉</h3>
+    <div class="stat">
+      <div class="value red">死亡交叉</div>
+      <div class="label">2022年6月 @ 指數381.8</div>
+    </div>
+  </div>
+</div>
+
+<!-- Interactive Chart -->
+<div class="card" style="padding:5px;">
+  <h2 style="padding:15px 15px 0 15px;">📈 價格走勢 + 9EMA/21EMA 技術分析圖</h2>
+  <div class="chart-container">
+    <iframe src="ph_ta_chart.html" style="width:100%;height:750px;border:none;border-radius:8px;" title="PH Index Technical Analysis"></iframe>
+    <div style="text-align:center;padding:5px;color:#888;font-size:11px;">
+      🖱️ 拉選 zoom • Hover 睇數據 • 背景顏色代表不同市況區段 • 🟢=黃金交叉 marker
+    </div>
+  </div>
+</div>
+
+<!-- Phase Legend -->
+<div class="card">
+  <h2>🎨 市況區段圖例</h2>
+  <div class="legend-grid">
+    <div class="legend-item" style="background:#0a2a1a;color:#4ecdc4;border:1px solid #1a4a3a;">🟢 牛市上升期</div>
+    <div class="legend-item" style="background:#2a2a0a;color:#f5a623;border:1px solid #4a3a1a;">🟡 黃金交叉區域</div>
+    <div class="legend-item" style="background:#2a1a0a;color:#ff8c42;border:1px solid #4a2a1a;">🟠 回調測試期</div>
+    <div class="legend-item" style="background:#0a1a2a;color:#60a5fa;border:1px solid #1a2a4a;">🔵 深度回調期</div>
+    <div class="legend-item" style="background:#1a0a2a;color:#a78bfa;border:1px solid #2a1a4a;">🟣 弱勢反彈期</div>
+    <div class="legend-item" style="background:#2a1a0a;color:#ff8c42;border:1px solid #4a2a1a;">🔶 反彈突破期</div>
+    <div class="legend-item" style="background:#2a0a0a;color:#e94560;border:1px solid #4a1a1a;">🔴 死亡交叉區域</div>
+    <div class="legend-item" style="background:#0a0a2a;color:#e94560;border:1px solid #1a0a4a;">⚫ 熊市下跌期</div>
+  </div>
+</div>
+
+<!-- Recent 12 Months Table -->
+<div class="card">
+  <h2>📅 最近12個月逐月分析</h2>
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>月份</th>
+        <th>指數</th>
+        <th>9EMA</th>
+        <th>21EMA</th>
+        <th>EMA差值</th>
+        <th>市況區段</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>2025-03</td><td>284.9</td><td>291.2</td><td>305.6</td><td style="color:#e94560;">-14.4</td><td>⚫ 熊市下跌期</td></tr>
+      <tr><td>2025-04</td><td>286.5</td><td>290.3</td><td>303.9</td><td style="color:#e94560;">-13.6</td><td>⚫ 熊市下跌期</td></tr>
+      <tr><td>2025-05</td><td>286.5</td><td>289.5</td><td>302.3</td><td style="color:#e94560;">-12.8</td><td>⚫ 熊市下跌期</td></tr>
+      <tr><td>2025-06</td><td>286.7</td><td>288.9</td><td>300.9</td><td style="color:#e94560;">-12.0</td><td>⚫ 熊市下跌期</td></tr>
+      <tr><td>2025-07</td><td>288.1</td><td>288.8</td><td>299.7</td><td style="color:#e94560;">-10.9</td><td>⚫ 熊市下跌期</td></tr>
+      <tr><td>2025-08</td><td>288.8</td><td>288.8</td><td>298.7</td><td style="color:#a78bfa;">+0.0</td><td>🟣 弱勢反彈期</td></tr>
+      <tr><td>2025-09</td><td>293.4</td><td>289.7</td><td>298.2</td><td style="color:#a78bfa;">-8.5</td><td>🟣 弱勢反彈期</td></tr>
+      <tr><td>2025-10</td><td>294.9</td><td>290.7</td><td>297.9</td><td style="color:#a78bfa;">-7.2</td><td>🟣 弱勢反彈期</td></tr>
+      <tr><td>2025-11</td><td>298.7</td><td>292.3</td><td>298.0</td><td style="color:#ff8c42;">-5.7</td><td>🔶 反彈突破期</td></tr>
+      <tr><td>2025-12</td><td>299.7</td><td>293.8</td><td>298.2</td><td style="color:#ff8c42;">-4.4</td><td>🔶 反彈突破期</td></tr>
+      <tr><td>2026-01</td><td>302.8</td><td>295.6</td><td>298.6</td><td style="color:#ff8c42;">-3.0</td><td>🔶 反彈突破期</td></tr>
+      <tr style="border-top:2px solid #4ecdc4;"><td><strong>2026-02</strong></td><td><strong style="color:#4ecdc4;">307.6</strong></td><td><strong>298.0</strong></td><td><strong>299.4</strong></td><td style="color:#e94560;"><strong>-1.4</strong></td><td><strong>🔶 反彈突破期</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- Historical Crossovers -->
+<div class="card">
+  <h2>📜 歷次黃金交叉 vs 死亡交叉回顧</h2>
+  <div class="grid-2">
+    <div>
+      <h3>🟢 黃金交叉（9EMA升穿21EMA）</h3>
+      <table>
+        <thead><tr><th>日期</th><th>指數</th><th>後續表現</th></tr></thead>
+        <tbody>
+          <tr><td>1995-12</td><td>~146</td><td>回報率升至2年高位</td></tr>
+          <tr><td>1999-04</td><td>~107</td><td>金融風暴後反彈</td></tr>
+          <tr><td>2009-04</td><td>~112</td><td>金融海嘯後大牛市起點，樓價由112升至394（+252%）</td></tr>
+          <tr><td>2014-01</td><td>~237</td><td>持續上升至2021年394高位</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <h3>🔴 死亡交叉（21EMA跌穿9EMA）</h3>
+      <table>
+        <thead><tr><th>日期</th><th>指數</th><th>後續表現</th></tr></thead>
+        <tbody>
+          <tr><td>1997-10</td><td>~159</td><td>亞洲金融風暴，樓價由159跌至103（-35%）</td></tr>
+          <tr><td>2001-02</td><td>~89</td><td>科網爆破後，樓價續跌至2003年SARS 59</td></tr>
+          <tr><td>2018-12</td><td>~341</td><td>後來反覆，但2020年疫情後反彈</td></tr>
+          <tr><td>2022-06</td><td>~382</td><td>加息周期，樓價由382跌至目前307（-20%+）</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Market Phase Distribution -->
+<div class="card">
+  <h2>📊 市況分佈（1993-2026）</h2>
+  <div class="grid-3">
+    <div class="stat"><div class="value green">47%</div><div class="label">🟢 牛市上升期</div></div>
+    <div class="stat"><div class="value red">24%</div><div class="label">⚫ 熊市下跌期</div></div>
+    <div class="stat"><div class="value yellow">8%</div><div class="label">🟠 回調測試期</div></div>
+    <div class="stat"><div class="value blue">6%</div><div class="label">🔵 深度回調期</div></div>
+    <div class="stat"><div class="value purple">5%</div><div class="label">⬜ 初始階段</div></div>
+    <div class="stat"><div class="value orange">3%</div><div class="label">🟡/🔴 交叉區域</div></div>
+  </div>
+</div>
+
+<!-- Assessment and Outlook -->
+<div class="card" style="border-left:4px solid #f5a623;">
+  <h2 style="color:#f5a623;">🧠 技術分析總結</h2>
+  <p style="line-height:1.8;font-size:14px;">
+
+  <strong>目前定位（2026年2月）：</strong><br>
+  價格指數 307.6，處於<b style="color:#ff8c42;">🔶 反彈突破期（Deep Bounce）</b><br><br>
+
+  <strong>核心觀察：</strong><br>
+  1️⃣ 價格已連續4個月（2025年11月起）站上21EMA，走勢明顯轉強<br>
+  2️⃣ 9EMA仍在21EMA之下（差值-1.39），死亡交叉格局尚未突破<br>
+  3️⃣ EMA差值正快速收窄：由-14.4（2025年3月）收窄至-1.4（2026年2月）<br>
+  4️⃣ <b>若趨勢持續，9EMA將在未來1-2個月升穿21EMA，形成黃金交叉</b> — 這將會是自2014年以來首次黃金交叉<br><br>
+
+  <strong>歷史上最近一次死亡交叉（2022年6月）：</strong><br>
+  當年指數381.8，至今累計跌幅約 -19.5%。與1997年死亡交叉後 -35% 及2001年後續跌相比，<br>
+  本輪調整幅度已接近典型死亡交叉週期的中後段。<br><br>
+
+  <strong>關鍵展望：</strong><br>
+  • <b style="color:#4ecdc4;">樂觀：</b>若價格企穩300以上，9EMA將自然升穿21EMA，確認新一輪上升週期<br>
+  • <b style="color:#e94560;">悲觀：</b>若價格再次跌穿298（21EMA），反彈突破期將失效，回歸熊市下跌期<br>
+  • <b>關鍵分水嶺：</b>298（21EMA）為短線支持，300為心理關口，315為近3年高位阻力<br>
+
+  </p>
+</div>
+
+<!-- Methodology -->
+<div class="card">
+  <h2>🔬 分析方法說明</h2>
+  <ul>
+    <li><strong>數據來源：</strong>差餉物業估價署（RVD）his_data_4.xls — 私人物業售價指數（All Classes, 1999=100），按月數據</li>
+    <li><strong>9EMA（月線）：</strong>9個月指數移動平均，代表短期趨勢（相當於約9個月）</li>
+    <li><strong>21EMA（月線）：</strong>21個月指數移動平均，代表中期趨勢（相當於約21個月）</li>
+    <li><strong>黃金交叉：</strong>9EMA由下而上升穿21EMA，通常預示上升趨勢開始</li>
+    <li><strong>死亡交叉：</strong>9EMA由上而下跌穿21EMA，通常預示下跌趨勢開始</li>
+    <li><strong>市況分類：</strong>根據價格與兩條EMA的相對位置，劃分為8個不同區段</li>
+  </ul>
+</div>
+
+<div style="text-align:center;padding:20px;color:#666;font-size:12px;">
+  Hermes AI Agent 自動生成 • 數據來源：差餉物業估價署 (RVD) • 報告時間：2026年4月25日<br>
+  <span style="color:#444;">⚠️ 技術分析僅供參考，不構成投資建議</span>
+</div>
+
+</div>
+</body>
+</html>
