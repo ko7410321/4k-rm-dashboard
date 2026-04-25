@@ -52,26 +52,86 @@ li { margin-bottom: 5px; }
 <body>
 <div class="container">
 
-<h1>🏠 YMS 住宅物業 Yield-Mortgage Spread 分析</h1>
+<h1>🏠 4KGOR YMS 住宅物業 Yield-Mortgage Spread 分析</h1>
 <div class="subtitle">量化分析報告 | 數據截至 2026年2月 | 由 Hermes AI Agent 自動生成</div>
 
 <!-- Chart -->
-<div class="card" style="padding: 10px;">
+<div class="card" style="padding: 5px;">
 <div class="chart-container">
-<img src="yms_chart.png" alt="YMS Trend Chart with 125-SMA">
-<div style="text-align:center;padding:8px;color:#888;font-size:12px;">白色粗線 = YMS (LTV=60%) 嘅 125期簡單移動平均線 (SMA-125)</div>
+<iframe src="yms_chart_interactive.html" style="width:100%;height:620px;border:none;border-radius:8px;" title="YMS Interactive Chart"></iframe>
+<div style="text-align:center;padding:5px;color:#888;font-size:11px;">🖱️ 拉選 zoom • Hover 睇數據 • 可撳 legend 隱藏/顯示線條</div>
 </div>
+</div>
+
+<!-- Price Index SMA Guide -->
+<div class="card">
+<h2>📈 樓價趨勢解讀：指數 vs 125期SMA</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+<div style="background:#0a2a1a;border-radius:8px;padding:15px;border:1px solid #1a4a3a;text-align:center;opacity:0.4;">
+<div style="font-size:36px;margin-bottom:8px;">📈</div>
+<div style="font-size:16px;color:#4ecdc4;font-weight:bold;">樓價指數 > 125SMA</div>
+<div style="font-size:13px;color:#b0d0c0;margin-top:8px;">
+<b style="color:#4ecdc4;">⬆️ 上升趨勢（Rise）</b><br>
+代表樓價處於125期（約10年）移動平均線之上，市場整體處於上升通道。
+</div>
+</div>
+<div style="background:#2a1a1a;border-radius:8px;padding:15px;border:1px solid #e94560;text-align:center;box-shadow:0 0 15px rgba(233,69,96,0.3);">
+<div style="font-size:36px;margin-bottom:8px;">📉</div>
+<div style="font-size:16px;color:#e94560;font-weight:bold;">樓價指數 < 125SMA</div>
+<div style="font-size:13px;color:#d0b0b0;margin-top:8px;">
+<b style="color:#e94560;">⬇️ 下跌趨勢（Drop）</b><br>
+代表樓價低於長期平均線，市場處於下跌或調整階段。然而從YMS角度看，樓價下跌同時推高回報率，反而可能創造YMS轉正嘅入市機會。
+</div>
+<div style="margin-top:10px;padding:4px 12px;background:#4a1a1a;border-radius:4px;display:inline-block;color:#e94560;font-weight:bold;font-size:13px;">
+📍 目前位置：指數 307.6 &lt; SMA 343.1（⬇️ 下跌趨勢）
+</div>
+</div>
+</div>
+<p style="font-size:12px;color:#888;margin-top:12px;text-align:center;">
+💡 <b>注意：</b> 樓價指數 vs SMA只能反映價格趨勢方向，而唔係絕對嘅買賣訊號。<br>
+<b>YMS先係判斷「抵唔抵買」嘅核心指標</b> — YMS正數 = 回報cover到利息 = 更安全嘅入市時機。
+</p>
+</div>
+
+<!-- Collapsible Key Events -->
+<div class="card">
+<details style="cursor:pointer;">
+<summary style="font-size:18px;color:#f5a623;font-weight:bold;padding:5px 0;">📌 點擊展開關鍵年份標記</summary>
+<div style="margin-top:15px;">
+<table>
+<thead>
+<tr><th>年份／時期</th><th>毛回報率</th><th>淨回報率</th><th>1M HIBOR</th><th>YMS (LTV=60%)</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>1997年8月</strong><br><small>亞洲金融風暴／港元狙擊</small></td><td>~3.87%</td><td>~2.07%</td><td>8.82%</td><td style="color:#e94560;"><strong>-3.22%</strong> ⛔</td></tr>
+<tr><td><strong>2003年6月</strong><br><small>SARS後底部</small></td><td>5.24%</td><td>3.44%</td><td>1.11%</td><td style="color:#4ecdc4;"><strong>+2.78%</strong> ✅</td></tr>
+<tr><td><strong>2008年9月</strong><br><small>雷曼倒閉／金融海嘯</small></td><td>3.96%</td><td>2.16%</td><td>4.36%</td><td style="color:#f5a623;"><strong>-0.45%</strong></td></tr>
+<tr><td><strong>2021年1月</strong><br><small>市場高峰</small></td><td>2.12%</td><td>0.32%</td><td>0.16%</td><td style="color:#4ecdc4;"><strong>+0.23%</strong></td></tr>
+<tr><td><strong>2026年2月</strong><br><small>最新</small></td><td>2.80%</td><td>1.00%</td><td>2.41%</td><td style="color:#e94560;"><strong>-0.45%</strong> 🔴</td></tr>
+</tbody>
+</table>
+</div>
+</details>
 </div>
 
 <!-- Executive Summary -->
 <div class="card">
 <h2>📋 執行摘要</h2>
 <p style="line-height:1.8;font-size:14px;">
-本報告基於差餉物業估價署（RVD）及香港金融管理局（HKMA）官方數據，計算香港私人住宅物業的YMS（Yield-Mortgage Spread，回報率與按揭息差）。YMS是衡量住宅物業投資回報相對於融資成本的關鍵指標。
-<br><br>
-<strong>截至2026年2月</strong>，香港私人住宅的整體平均<strong>毛回報率為2.80%</strong>，扣除1.8%持有成本後的<strong>淨回報率僅1.00%</strong>。與此同時，1個月HIBOR（銀行同業拆息）處於2.41%水平。在60%按揭成數（LTV）假設下，<strong>YMS為-0.45%</strong>，已連續<strong>7個月</strong>處於負值區間。這意味著即使承造六成按揭，租金回報已無法完全覆蓋按揭利息成本，物業投資者處於<span style="color:#e94560;font-weight:bold;">「負現金流」</span>狀態。
-<br><br>
-目前YMS水平雖仍遠優於1997年亞洲金融風暴期間的極端情況（YMS一度低見-3.22%），但已低於2021年市場高峰期的+0.26%水平，並正在逼近2008年金融海嘯後的負值區域。與2003年SARS後YMS高達+2.82%的極佳回報率相比，目前市場環境已出現根本性逆轉。
+
+<strong>咩係YMS？點解咁重要？</strong><br>
+YMS（Yield-Mortgage Spread）= 物業淨回報率 − (按揭利率 × 按揭成數)。簡單講，就係「層樓俾你嘅回報」減「還銀行嘅利息成本」。<br><br>
+
+<strong style="color:#4ecdc4;">✅ YMS 正數（> 0%）= 入市好時機</strong><br>
+代表租金回報高過供樓利息，物業自給自足，仲有正現金流。歷史上YMS最靚係 <b style="color:#4ecdc4;">2003年SARS後嘅+2.78%</b>，之後樓價喺幾年內翻咗一番。<br><br>
+
+<strong style="color:#e94560;">❌ YMS 負數（< 0%）= 等吓先，或揀高回報物業</strong><br>
+代表租金唔夠cover利息，每月要倒貼。但YMS負数都有分深淺：<br>
+• <b style="color:#f5a623;">-0.5% 以内（輕微負值）：</b>如2008年金融海嘯前，屬短暫現象，之後樓價迅速反彈<br>
+• <b style="color:#e94560;">-0.5% 以下（深度負值）：</b>如1997年嘅 -3.22%，伴隨長時間樓市下跌，唔適合高槓桿入市<br><br>
+
+<strong>而家點樣？</strong><br>
+<strong>截至2026年2月</strong>，YMS為<b style="color:#e94560;">-0.45%</b>，連續<b>7個月</b>負值。呢個水平同2008年金融海嘯時期相若，屬於「輕微負值」警戒區 — 未到1997年咁恐怖，但已唔係2021年嗰陣正回報嘅環境。入市與否取決於你嘅持貨能力同係咪自住。
 </p>
 </div>
 
@@ -283,6 +343,44 @@ li { margin-bottom: 5px; }
 <li><strong>1990-1998年數據：</strong> 使用RVD季度回報率數據及可用HIBOR數據構建</li>
 <li><strong>免責聲明：</strong> 本報告僅供參考，不構成任何投資建議。所有數據來自香港政府官方網站，分析力求客觀準確，但使用者應自行核實。</li>
 </ul>
+</div>
+
+<!-- Future YMS Thinking Box -->
+<div class="card" style="border-left:4px solid #f5a623;background:#1a1a2e;">
+<h2 style="color:#f5a623;">🧠 未來YMS轉正值的思考框架</h2>
+<p style="font-size:13px;line-height:1.8;color:#ccc;margin-bottom:15px;">
+YMS要由目前的<b>-0.45%</b>重返正值，需滿足「淨回報率提升」或「按揭利率下降」兩條路徑。以下為樂觀與悲觀情景分析：
+</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+<div style="background:#0a2a1a;border-radius:8px;padding:15px;border:1px solid #1a4a3a;">
+<h3 style="color:#4ecdc4;margin-bottom:10px;">🌞 樂觀情景 — YMS重返正值的條件</h3>
+<ul style="font-size:12px;line-height:2;color:#b0d0c0;padding-left:18px;list-style-type:square;">
+<li><b>聯儲局大幅減息：</b>若美國經濟放緩，聯儲局加速減息，帶動HIBOR跌穿1.5%，在現有回報率下YMS即可轉正（分水嶺：HIBOR &lt; 1.67%）</li>
+<li><b>租金回報率回升：</b>樓價調整20-25%而租金不變，毛回報率可升至3.5-3.7%，淨回報率達1.7-1.9%，足以抵銷HIBOR成本</li>
+<li><b>資金流入避險：</b>環球不確定性升溫，資金流入香港樓市避險，支持租金及物業價值</li>
+<li><b>政府政策支持：</b>撤辣後成交回暖，發展商加快推盤，二手業主議價空間收窄，樓市軟著陸</li>
+<li><b>供樓利息扣稅優化：</b>政府擴大供樓利息扣除，變相降低實際按揭成本，改善YMS（儘管非直接影響公式）</li>
+</ul>
+</div>
+
+<div style="background:#2a1a1a;border-radius:8px;padding:15px;border:1px solid #4a2a2a;">
+<h3 style="color:#e94560;margin-bottom:10px;">🌧️ 悲觀情景 — YMS持續為負的風險</h3>
+<ul style="font-size:12px;line-height:2;color:#d0b0b0;padding-left:18px;list-style-type:square;">
+<li><b>利率居高不下：</b>通脹韌性超預期，聯儲局維持高利率更長時間，HIBOR長期處於2.5-3.5%區間</li>
+<li><b>租金跟隨樓價下跌：</b>經濟放緩、人口流出或就業市場惡化，導致租金下調，進一步壓縮回報率</li>
+<li><b>負現金流引發拋售：</b>YMS持續為負導致投資者沽貨離場，樓價加速下跌，形成負財富效應螺旋</li>
+<li><b>銀行收緊按揭：</b>物業估值下跌及負資產增加，銀行收緊按揭審批，LTV進一步下調，槓桿回報降低</li>
+<li><b>供應過剩：</b>未來3-4年新樓供應持續高企，發展商減價促銷，二手樓價受壓，進一步拉低回報率</li>
+<li><b>內地經濟持續疲弱：</b>北上消費持續，本地經濟復甦乏力，影響就業及收入增長</li>
+</ul>
+</div>
+</div>
+
+<p style="font-size:12px;color:#888;margin-top:15px;line-height:1.6;text-align:center;">
+<strong>關鍵臨界點：</strong> 當1M HIBOR跌穿 <b style="color:#4ecdc4;">~1.67%</b> 或毛回報率升至 <b style="color:#4ecdc4;">~3.3%</b>，YMS即可重返正值。<br>
+歷史經驗顯示，YMS由負轉正通常領先樓價見底回升 **約6-12個月**（2003年SARS及2008年金融海嘯均印證此規律）。
+</p>
 </div>
 
 <div style="text-align:center;padding:20px;color:#666;font-size:12px;">
