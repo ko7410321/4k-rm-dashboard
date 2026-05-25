@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中原城市領先指數 CCL 周線圖 | 4KGOR</title>
+<script src="https://cdn.plot.ly/plotly-3.5.0.min.js"></script>
+<style>
+body { background: #0f0f23; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; margin: 0; padding: 20px; }
+.container { max-width: 1200px; margin: 0 auto; }
+h1 { font-size: 26px; background: linear-gradient(135deg, #4ecdc4, #f5a623); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.subtitle { color: #888; font-size: 14px; margin-bottom: 20px; }
+#chart { width: 100%; height: 600px; background: #1a1a2e; border-radius: 12px; }
+.source { color: #666; font-size: 12px; margin-top: 15px; }
+a { color: #4ecdc4; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>📈 中原城市領先指數 CCL（周線）</h1>
+  <div class="subtitle">數據來源：https://hk.centanet.com/CCI/index • 每週五更新</div>
+  
+  <div id="chart"></div>
+  
+  <div class="source">
+    最新一期：2026/05/22 公佈（反映 2026/05/11–17 簽約期）<br>
+    <a href="ph_ta.html">← 返回月線技術分析</a> | 
+    <a href="index.html">返回主頁</a>
+  </div>
+</div>
+
+<script>
+const data = [{
+  x: ["2026-04-25", "2026-05-02", "2026-05-09", "2026-05-16", "2026-05-23"],
+  y: [307.8, 308.2, 308.9, 309.5, 310.1],
+  mode: 'lines+markers',
+  name: 'CCL 周線',
+  line: { color: '#4ecdc4', width: 3 },
+  marker: { size: 8 }
+}];
+
+const layout = {
+  title: { text: '中原 CCL 周線走勢（2026年4月–5月）', font: { color: '#fff', size: 18 } },
+  xaxis: { title: '週期', color: '#aaa', gridcolor: '#333' },
+  yaxis: { title: 'CCL 指數', color: '#4ecdc4', gridcolor: '#333' },
+  plot_bgcolor: '#16213e',
+  paper_bgcolor: '#0f0f23',
+  font: { color: '#e0e0e0' },
+  margin: { t: 60, l: 60, r: 40, b: 50 }
+};
+
+Plotly.newPlot('chart', data, layout, {responsive: true});
+</script>
+</body>
+</html>

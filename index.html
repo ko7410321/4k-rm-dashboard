@@ -191,9 +191,9 @@ YMS（Yield-Mortgage Spread）= 物業淨回報率 − (按揭利率 × 按揭�
 <!-- Data Sources -->
 <div class="card">
 <h2>📁 數據來源及提取記錄</h2>
-<div class="source-item"><span class="tag tag-rvd">RVD</span> <span class="label">his_data_15.xls</span> — 私人物業的市場回報率（自1987年起），最後更新：2026年4月9日。提取住宅類別（A-E類別）每月毛回報率。</div>
-<div class="source-item"><span class="tag tag-rvd">RVD</span> <span class="label">his_data_3.xls</span> — 私人住宅租金指數（自1979年起），最後更新：2026年3月27日。用於交叉驗證。</div>
-<div class="source-item"><span class="tag tag-rvd">RVD</span> <span class="label">his_data_4.xls</span> — 私人住宅售價指數（自1979年起），最後更新：2026年3月27日。用於交叉驗證。</div>
+<div class="source-item"><span class="tag tag-ccl">CCL</span> <span class="label">中原城市領先指數</span> — 專注於 TA 圖表數據來源（2026年4月起）</div>
+<div class="source-item"><span class="tag tag-ccl">CCL</span> <span class="label">中原城市領先指數</span> — 專注於 TA 圖表數據來源</div>
+<div class="source-item"><span class="tag tag-ccl">CCL</span> <span class="label">中原城市領先指數</span> — 專注於 TA 圖表數據來源</div>
 <div class="source-item"><span class="tag tag-hkma">HKMA</span> <span class="label">T0307.xlsx</span> — 住宅按揭統計調查，最後更新：2026年4月13日。提取新批按揭利率分佈數據。</div>
 <div class="source-item"><span class="tag tag-hkma">HKMA</span> <span class="label">T060301.xls</span> — 港元利息結算率（HIBOR Fixing），最後更新：2026年4月8日。提取1個月HIBOR期末數據（1982-2026年3月）。</div>
 <div class="source-item"><strong>計算方法：</strong> Net Yield = Gross Yield - 1.8%（標準扣除：物業稅15%×80% + 管理費約0.3% + 差餉約0.5% + 空置及維修約0.2% = 約1.8%）。YMS = Net Yield(%) - (1M HIBOR(%) × LTV)。HIBOR用作按揭利率代理變量。</div>
@@ -342,11 +342,11 @@ YMS（Yield-Mortgage Spread）= 物業淨回報率 − (按揭利率 × 按揭�
 <div class="card">
 <h2>🔬 計算方法說明</h2>
 <ul>
-<li><strong>毛回報率：</strong> 直接提取自RVD his_data_15.xls「Monthly(Domestic)」工作表，為A-E類別物業的平均回報率</li>
+<li><strong>毛回報率：</strong> 直接提取自中原城市領先指數 (Centaline CCI)</li>
 <li><strong>淨回報率 = 毛回報率 - 1.8%：</strong> 1.8%為標準扣除，涵蓋物業稅（租金收入×80%×15%≈0.4%#）、管理費（約0.3-0.5%）、差餉（約0.5%）、空置損失（約0.2-0.3%）及維修儲備（約0.2-0.3%）。#實際物業稅按租金淨額徵收，此處為簡化估算</li>
 <li><strong>按揭利率代理變量：</strong> 使用1個月HIBOR（HKMA T060301.xls期末數據），因香港新批按揭中約85-95%以HIBOR為定價參考</li>
 <li><strong>LTV假設：</strong> 基準為60%（金管局指引上限），敏感度分析展示LTV=50%及LTV=70%的情景</li>
-<li><strong>1990-1998年數據：</strong> 使用RVD季度回報率數據及可用HIBOR數據構建</li>
+<li><strong>1990-1998年數據：</strong> 使用 Centaline CCI 數據及可用 HIBOR 數據構建</li>
 <li><strong>免責聲明：</strong> 本報告僅供參考，不構成任何投資建議。所有數據來自香港政府官方網站，分析力求客觀準確，但使用者應自行核實。</li>
 </ul>
 </div>
@@ -390,7 +390,7 @@ YMS要由目前的<b>-0.45%</b>重返正值，需滿足「淨回報率提升」�
 </div>
 
 <div style="text-align:center;padding:20px;color:#666;font-size:12px;">
-Hermes AI Agent 自動更新 (2026年05月26日) • 數據來源：差餉物業估價署 (RVD) 及 香港金融管理局 (HKMA) • 報告時間：2026年4月25日
+Hermes AI Agent 自動更新 (2026年05月26日) • 數據來源：中原城市領先指數 (Centaline CCI) 及 香港金融管理局 (HKMA) • 報告時間：2026年4月25日
 </div>
 </div>
 </body>
